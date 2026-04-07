@@ -1,0 +1,36 @@
+{
+  "properties": {
+    "water_retention_risk": {
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Water Retention Risk",
+      "type": "integer"
+    },
+    "release_drainage_potential": {
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Release Drainage Potential",
+      "type": "integer"
+    },
+    "nervous_system_load": {
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Nervous System Load",
+      "type": "integer"
+    },
+    "need_for_rhythm_precision": {
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Need For Rhythm Precision",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "water_retention_risk",
+    "release_drainage_potential",
+    "nervous_system_load",
+    "need_for_rhythm_precision"
+  ],
+  "title": "DailyScales",
+  "type": "object"
+}

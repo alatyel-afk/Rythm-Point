@@ -1,0 +1,36 @@
+{
+  "description": "Долгота в сидерическом зодиаке, 0° = начало Овна.",
+  "properties": {
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "longitude_deg": {
+      "exclusiveMaximum": 360.0,
+      "minimum": 0.0,
+      "title": "Longitude Deg",
+      "type": "number"
+    },
+    "retrograde": {
+      "default": false,
+      "title": "Retrograde",
+      "type": "boolean"
+    },
+    "combust": {
+      "default": false,
+      "title": "Combust",
+      "type": "boolean"
+    },
+    "atmakaraka": {
+      "default": false,
+      "title": "Atmakaraka",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "name",
+    "longitude_deg"
+  ],
+  "title": "PlanetSidereal",
+  "type": "object"
+}

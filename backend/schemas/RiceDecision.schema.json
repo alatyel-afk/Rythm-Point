@@ -1,0 +1,18 @@
+{
+  "properties": {
+    "allowed": {
+      "title": "Allowed",
+      "type": "boolean"
+    },
+    "reason": {
+      "title": "Reason",
+      "type": "string"
+    }
+  },
+  "required": [
+    "allowed",
+    "reason"
+  ],
+  "title": "RiceDecision",
+  "type": "object"
+}

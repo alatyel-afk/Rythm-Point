@@ -1,0 +1,89 @@
+{
+  "description": "Подтверждённые пользователем позиции D1.\nЛагна и планеты — сидерические долготы в градусах.",
+  "properties": {
+    "lagna_deg": {
+      "title": "Lagna Deg",
+      "type": "number"
+    },
+    "sun_deg": {
+      "title": "Sun Deg",
+      "type": "number"
+    },
+    "moon_deg": {
+      "title": "Moon Deg",
+      "type": "number"
+    },
+    "mars_deg": {
+      "title": "Mars Deg",
+      "type": "number"
+    },
+    "mercury_deg": {
+      "title": "Mercury Deg",
+      "type": "number"
+    },
+    "jupiter_deg": {
+      "title": "Jupiter Deg",
+      "type": "number"
+    },
+    "venus_deg": {
+      "title": "Venus Deg",
+      "type": "number"
+    },
+    "saturn_deg": {
+      "title": "Saturn Deg",
+      "type": "number"
+    },
+    "rahu_deg": {
+      "title": "Rahu Deg",
+      "type": "number"
+    },
+    "ketu_deg": {
+      "title": "Ketu Deg",
+      "type": "number"
+    },
+    "mercury_retrograde": {
+      "default": true,
+      "title": "Mercury Retrograde",
+      "type": "boolean"
+    },
+    "jupiter_retrograde": {
+      "default": true,
+      "title": "Jupiter Retrograde",
+      "type": "boolean"
+    },
+    "mercury_combust": {
+      "default": true,
+      "title": "Mercury Combust",
+      "type": "boolean"
+    },
+    "saturn_combust": {
+      "default": true,
+      "title": "Saturn Combust",
+      "type": "boolean"
+    },
+    "mercury_atmakaraka": {
+      "default": true,
+      "title": "Mercury Atmakaraka",
+      "type": "boolean"
+    },
+    "birth_tithi_pattern_note": {
+      "default": "Рождение на 4-й титхе: в протоколе учитывается как модификатор ритма и чувствительности к сдвигам режима.",
+      "title": "Birth Tithi Pattern Note",
+      "type": "string"
+    }
+  },
+  "required": [
+    "lagna_deg",
+    "sun_deg",
+    "moon_deg",
+    "mars_deg",
+    "mercury_deg",
+    "jupiter_deg",
+    "venus_deg",
+    "saturn_deg",
+    "rahu_deg",
+    "ketu_deg"
+  ],
+  "title": "NatalChartD1",
+  "type": "object"
+}

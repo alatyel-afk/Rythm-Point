@@ -1,0 +1,76 @@
+{
+  "properties": {
+    "day_date": {
+      "format": "date",
+      "title": "Day Date",
+      "type": "string"
+    },
+    "lunch_type": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Lunch Type"
+    },
+    "had_rice": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Had Rice"
+    },
+    "heaviness": {
+      "anyOf": [
+        {
+          "maximum": 5,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Heaviness"
+    },
+    "rebound_after_ekadashi_pradosh": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Rebound After Ekadashi Pradosh"
+    },
+    "notes": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Notes"
+    }
+  },
+  "required": [
+    "day_date"
+  ],
+  "title": "NutritionLogEntry",
+  "type": "object"
+}

@@ -1,0 +1,88 @@
+{
+  "properties": {
+    "day_type_rules": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Day Type Rules",
+      "type": "array"
+    },
+    "scales_modifiers": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Scales Modifiers",
+      "type": "array"
+    },
+    "rice_rules": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Rice Rules",
+      "type": "array"
+    },
+    "breathing_rules": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Breathing Rules",
+      "type": "array"
+    },
+    "mudra_rules": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Mudra Rules",
+      "type": "array"
+    },
+    "thyroid_rules": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Thyroid Rules",
+      "type": "array"
+    },
+    "body_signal_rules": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Body Signal Rules",
+      "type": "array"
+    },
+    "meal_matrix_rules": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Meal Matrix Rules",
+      "type": "array"
+    },
+    "load_rules": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Load Rules",
+      "type": "array"
+    },
+    "aroma_rules": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Aroma Rules",
+      "type": "array"
+    }
+  },
+  "required": [
+    "day_type_rules",
+    "scales_modifiers",
+    "rice_rules",
+    "breathing_rules",
+    "mudra_rules",
+    "thyroid_rules",
+    "body_signal_rules",
+    "meal_matrix_rules",
+    "load_rules",
+    "aroma_rules"
+  ],
+  "title": "RuleTrace",
+  "type": "object"
+}

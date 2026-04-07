@@ -1,0 +1,325 @@
+{
+  "$defs": {
+    "BodySignalEntry": {
+      "properties": {
+        "day_date": {
+          "format": "date",
+          "title": "Day Date",
+          "type": "string"
+        },
+        "ankles_evening": {
+          "anyOf": [
+            {
+              "maximum": 5,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ankles Evening"
+        },
+        "eye_area_morning": {
+          "anyOf": [
+            {
+              "maximum": 5,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Eye Area Morning"
+        },
+        "weight_kg": {
+          "anyOf": [
+            {
+              "maximum": 300.0,
+              "minimum": 30.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Weight Kg"
+        },
+        "tissue_density": {
+          "anyOf": [
+            {
+              "maximum": 5,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tissue Density"
+        },
+        "head_overload": {
+          "anyOf": [
+            {
+              "maximum": 5,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Head Overload"
+        },
+        "sleep_quality": {
+          "anyOf": [
+            {
+              "maximum": 5,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sleep Quality"
+        },
+        "sweet_craving": {
+          "anyOf": [
+            {
+              "maximum": 5,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sweet Craving"
+        },
+        "salty_craving": {
+          "anyOf": [
+            {
+              "maximum": 5,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Salty Craving"
+        },
+        "energy_level": {
+          "anyOf": [
+            {
+              "maximum": 5,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Energy Level"
+        },
+        "notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Notes"
+        }
+      },
+      "required": [
+        "day_date"
+      ],
+      "title": "BodySignalEntry",
+      "type": "object"
+    },
+    "NutritionLogEntry": {
+      "properties": {
+        "day_date": {
+          "format": "date",
+          "title": "Day Date",
+          "type": "string"
+        },
+        "lunch_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lunch Type"
+        },
+        "had_rice": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Had Rice"
+        },
+        "heaviness": {
+          "anyOf": [
+            {
+              "maximum": 5,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Heaviness"
+        },
+        "rebound_after_ekadashi_pradosh": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rebound After Ekadashi Pradosh"
+        },
+        "notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Notes"
+        }
+      },
+      "required": [
+        "day_date"
+      ],
+      "title": "NutritionLogEntry",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "signal": {
+      "$ref": "#/$defs/BodySignalEntry"
+    },
+    "nutrition": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/NutritionLogEntry"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "tithi_number": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Tithi Number"
+    },
+    "nakshatra_ru": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Nakshatra Ru"
+    },
+    "day_kind": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Day Kind"
+    },
+    "water_retention_risk": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Water Retention Risk"
+    },
+    "release_drainage_potential": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Release Drainage Potential"
+    },
+    "nervous_system_load": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Nervous System Load"
+    }
+  },
+  "required": [
+    "signal"
+  ],
+  "title": "BodySignalWithContext",
+  "type": "object"
+}

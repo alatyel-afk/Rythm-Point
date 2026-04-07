@@ -1,0 +1,29 @@
+{
+  "$defs": {
+    "LoadProfile": {
+      "enum": [
+        "walk_soft",
+        "moderate",
+        "lymph_stretch",
+        "no_overload"
+      ],
+      "title": "LoadProfile",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "profile": {
+      "$ref": "#/$defs/LoadProfile"
+    },
+    "detail": {
+      "title": "Detail",
+      "type": "string"
+    }
+  },
+  "required": [
+    "profile",
+    "detail"
+  ],
+  "title": "LoadBlock",
+  "type": "object"
+}

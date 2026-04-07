@@ -1,0 +1,95 @@
+{
+  "$defs": {
+    "LunchSpec": {
+      "properties": {
+        "matrix_used": {
+          "$ref": "#/$defs/MealMatrix"
+        },
+        "protein": {
+          "title": "Protein",
+          "type": "string"
+        },
+        "vegetables": {
+          "title": "Vegetables",
+          "type": "string"
+        },
+        "full_description": {
+          "title": "Full Description",
+          "type": "string"
+        },
+        "time_window": {
+          "title": "Time Window",
+          "type": "string"
+        },
+        "early_lunch": {
+          "title": "Early Lunch",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "matrix_used",
+        "protein",
+        "vegetables",
+        "full_description",
+        "time_window",
+        "early_lunch"
+      ],
+      "title": "LunchSpec",
+      "type": "object"
+    },
+    "MealMatrix": {
+      "enum": [
+        "A_stable",
+        "B_nervous",
+        "C_retention",
+        "D_ekadashi",
+        "E_pradosh",
+        "F_rice"
+      ],
+      "title": "MealMatrix",
+      "type": "string"
+    },
+    "RiceDecision": {
+      "properties": {
+        "allowed": {
+          "title": "Allowed",
+          "type": "boolean"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "allowed",
+        "reason"
+      ],
+      "title": "RiceDecision",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "breakfast": {
+      "title": "Breakfast",
+      "type": "string"
+    },
+    "lunch": {
+      "$ref": "#/$defs/LunchSpec"
+    },
+    "rice": {
+      "$ref": "#/$defs/RiceDecision"
+    },
+    "no_food_after_18": {
+      "default": true,
+      "title": "No Food After 18",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "breakfast",
+    "lunch",
+    "rice"
+  ],
+  "title": "NutritionBlock",
+  "type": "object"
+}

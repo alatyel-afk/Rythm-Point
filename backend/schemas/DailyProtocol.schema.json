@@ -1,0 +1,637 @@
+{
+  "$defs": {
+    "AromaProtocol": {
+      "properties": {
+        "morning": {
+          "$ref": "#/$defs/AromaSlot"
+        },
+        "morning_detail": {
+          "title": "Morning Detail",
+          "type": "string"
+        },
+        "daytime": {
+          "$ref": "#/$defs/AromaSlot"
+        },
+        "daytime_detail": {
+          "title": "Daytime Detail",
+          "type": "string"
+        },
+        "evening": {
+          "$ref": "#/$defs/AromaSlot"
+        },
+        "evening_detail": {
+          "title": "Evening Detail",
+          "type": "string"
+        }
+      },
+      "required": [
+        "morning",
+        "morning_detail",
+        "daytime",
+        "daytime_detail",
+        "evening",
+        "evening_detail"
+      ],
+      "title": "AromaProtocol",
+      "type": "object"
+    },
+    "AromaSlot": {
+      "enum": [
+        "frankincense",
+        "rose",
+        "geranium",
+        "rosemary",
+        "leuzea",
+        "anti_stress_blend",
+        "none"
+      ],
+      "title": "AromaSlot",
+      "type": "string"
+    },
+    "BreathBlock": {
+      "properties": {
+        "practice": {
+          "$ref": "#/$defs/BreathingPractice"
+        },
+        "title_ru": {
+          "title": "Title Ru",
+          "type": "string"
+        },
+        "minutes": {
+          "title": "Minutes",
+          "type": "integer"
+        },
+        "best_time": {
+          "title": "Best Time",
+          "type": "string"
+        },
+        "posture": {
+          "title": "Posture",
+          "type": "string"
+        },
+        "technique": {
+          "title": "Technique",
+          "type": "string"
+        },
+        "tongue_position": {
+          "title": "Tongue Position",
+          "type": "string"
+        },
+        "contraindication": {
+          "title": "Contraindication",
+          "type": "string"
+        }
+      },
+      "required": [
+        "practice",
+        "title_ru",
+        "minutes",
+        "best_time",
+        "posture",
+        "technique",
+        "tongue_position",
+        "contraindication"
+      ],
+      "title": "BreathBlock",
+      "type": "object"
+    },
+    "BreathingPractice": {
+      "enum": [
+        "diaphragmatic",
+        "lengthened_exhale",
+        "sama_vritti",
+        "nadi_shodhana_gentle",
+        "bhramari",
+        "chandra_bhedana"
+      ],
+      "title": "BreathingPractice",
+      "type": "string"
+    },
+    "DailyScales": {
+      "properties": {
+        "water_retention_risk": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Water Retention Risk",
+          "type": "integer"
+        },
+        "release_drainage_potential": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Release Drainage Potential",
+          "type": "integer"
+        },
+        "nervous_system_load": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Nervous System Load",
+          "type": "integer"
+        },
+        "need_for_rhythm_precision": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Need For Rhythm Precision",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "water_retention_risk",
+        "release_drainage_potential",
+        "nervous_system_load",
+        "need_for_rhythm_precision"
+      ],
+      "title": "DailyScales",
+      "type": "object"
+    },
+    "DayType": {
+      "enum": [
+        "stable_day",
+        "drainage_day",
+        "caution_day",
+        "high_sensitivity_day",
+        "ekadashi_day",
+        "pradosh_day",
+        "recovery_day_after_reduction",
+        "pre_full_moon_retention_day",
+        "pre_new_moon_precision_day"
+      ],
+      "title": "DayType",
+      "type": "string"
+    },
+    "LoadBlock": {
+      "properties": {
+        "profile": {
+          "$ref": "#/$defs/LoadProfile"
+        },
+        "detail": {
+          "title": "Detail",
+          "type": "string"
+        }
+      },
+      "required": [
+        "profile",
+        "detail"
+      ],
+      "title": "LoadBlock",
+      "type": "object"
+    },
+    "LoadProfile": {
+      "enum": [
+        "walk_soft",
+        "moderate",
+        "lymph_stretch",
+        "no_overload"
+      ],
+      "title": "LoadProfile",
+      "type": "string"
+    },
+    "LunchSpec": {
+      "properties": {
+        "matrix_used": {
+          "$ref": "#/$defs/MealMatrix"
+        },
+        "protein": {
+          "title": "Protein",
+          "type": "string"
+        },
+        "vegetables": {
+          "title": "Vegetables",
+          "type": "string"
+        },
+        "full_description": {
+          "title": "Full Description",
+          "type": "string"
+        },
+        "time_window": {
+          "title": "Time Window",
+          "type": "string"
+        },
+        "early_lunch": {
+          "title": "Early Lunch",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "matrix_used",
+        "protein",
+        "vegetables",
+        "full_description",
+        "time_window",
+        "early_lunch"
+      ],
+      "title": "LunchSpec",
+      "type": "object"
+    },
+    "MealMatrix": {
+      "enum": [
+        "A_stable",
+        "B_nervous",
+        "C_retention",
+        "D_ekadashi",
+        "E_pradosh",
+        "F_rice"
+      ],
+      "title": "MealMatrix",
+      "type": "string"
+    },
+    "MudraBlock": {
+      "properties": {
+        "mudra": {
+          "$ref": "#/$defs/MudraType"
+        },
+        "suggested": {
+          "title": "Suggested",
+          "type": "boolean"
+        },
+        "name_ru": {
+          "title": "Name Ru",
+          "type": "string"
+        },
+        "duration_minutes": {
+          "title": "Duration Minutes",
+          "type": "integer"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "finger_technique": {
+          "title": "Finger Technique",
+          "type": "string"
+        },
+        "posture": {
+          "title": "Posture",
+          "type": "string"
+        },
+        "breathing_during": {
+          "title": "Breathing During",
+          "type": "string"
+        },
+        "tongue_position": {
+          "title": "Tongue Position",
+          "type": "string"
+        },
+        "when_to_do": {
+          "title": "When To Do",
+          "type": "string"
+        },
+        "caution": {
+          "title": "Caution",
+          "type": "string"
+        }
+      },
+      "required": [
+        "mudra",
+        "suggested",
+        "name_ru",
+        "duration_minutes",
+        "reason",
+        "finger_technique",
+        "posture",
+        "breathing_during",
+        "tongue_position",
+        "when_to_do",
+        "caution"
+      ],
+      "title": "MudraBlock",
+      "type": "object"
+    },
+    "MudraType": {
+      "enum": [
+        "prana",
+        "apana",
+        "vayu",
+        "hakini",
+        "varuna",
+        "none"
+      ],
+      "title": "MudraType",
+      "type": "string"
+    },
+    "NutritionBlock": {
+      "properties": {
+        "breakfast": {
+          "title": "Breakfast",
+          "type": "string"
+        },
+        "lunch": {
+          "$ref": "#/$defs/LunchSpec"
+        },
+        "rice": {
+          "$ref": "#/$defs/RiceDecision"
+        },
+        "no_food_after_18": {
+          "default": true,
+          "title": "No Food After 18",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "breakfast",
+        "lunch",
+        "rice"
+      ],
+      "title": "NutritionBlock",
+      "type": "object"
+    },
+    "RiceDecision": {
+      "properties": {
+        "allowed": {
+          "title": "Allowed",
+          "type": "boolean"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "allowed",
+        "reason"
+      ],
+      "title": "RiceDecision",
+      "type": "object"
+    },
+    "RuleTrace": {
+      "properties": {
+        "day_type_rules": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Day Type Rules",
+          "type": "array"
+        },
+        "scales_modifiers": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Scales Modifiers",
+          "type": "array"
+        },
+        "rice_rules": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Rice Rules",
+          "type": "array"
+        },
+        "breathing_rules": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Breathing Rules",
+          "type": "array"
+        },
+        "mudra_rules": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Mudra Rules",
+          "type": "array"
+        },
+        "thyroid_rules": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Thyroid Rules",
+          "type": "array"
+        },
+        "body_signal_rules": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Body Signal Rules",
+          "type": "array"
+        },
+        "meal_matrix_rules": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Meal Matrix Rules",
+          "type": "array"
+        },
+        "load_rules": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Load Rules",
+          "type": "array"
+        },
+        "aroma_rules": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Aroma Rules",
+          "type": "array"
+        }
+      },
+      "required": [
+        "day_type_rules",
+        "scales_modifiers",
+        "rice_rules",
+        "breathing_rules",
+        "mudra_rules",
+        "thyroid_rules",
+        "body_signal_rules",
+        "meal_matrix_rules",
+        "load_rules",
+        "aroma_rules"
+      ],
+      "title": "RuleTrace",
+      "type": "object"
+    },
+    "SupplementSlot": {
+      "properties": {
+        "time": {
+          "title": "Time",
+          "type": "string"
+        },
+        "items": {
+          "title": "Items",
+          "type": "string"
+        }
+      },
+      "required": [
+        "time",
+        "items"
+      ],
+      "title": "SupplementSlot",
+      "type": "object"
+    },
+    "SupplementsBlock": {
+      "properties": {
+        "slots": {
+          "items": {
+            "$ref": "#/$defs/SupplementSlot"
+          },
+          "title": "Slots",
+          "type": "array"
+        },
+        "endoluten_today": {
+          "title": "Endoluten Today",
+          "type": "boolean"
+        },
+        "endoluten_note": {
+          "title": "Endoluten Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "slots",
+        "endoluten_today",
+        "endoluten_note"
+      ],
+      "title": "SupplementsBlock",
+      "type": "object"
+    },
+    "ThyroidSafetyNotes": {
+      "properties": {
+        "mode": {
+          "default": "conservative_thyroid_safe",
+          "title": "Mode",
+          "type": "string"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "notes"
+      ],
+      "title": "ThyroidSafetyNotes",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "date": {
+      "format": "date",
+      "title": "Date",
+      "type": "string"
+    },
+    "weekday": {
+      "title": "Weekday",
+      "type": "string"
+    },
+    "lunar_day_number": {
+      "maximum": 30,
+      "minimum": 1,
+      "title": "Lunar Day Number",
+      "type": "integer"
+    },
+    "moon_phase": {
+      "title": "Moon Phase",
+      "type": "string"
+    },
+    "nakshatra": {
+      "title": "Nakshatra",
+      "type": "string"
+    },
+    "ekadashi_flag": {
+      "title": "Ekadashi Flag",
+      "type": "boolean"
+    },
+    "pradosh_flag": {
+      "title": "Pradosh Flag",
+      "type": "boolean"
+    },
+    "day_type": {
+      "$ref": "#/$defs/DayType"
+    },
+    "body_effect_summary": {
+      "title": "Body Effect Summary",
+      "type": "string"
+    },
+    "nutrition": {
+      "$ref": "#/$defs/NutritionBlock"
+    },
+    "supplements": {
+      "$ref": "#/$defs/SupplementsBlock"
+    },
+    "breathing_practice": {
+      "$ref": "#/$defs/BreathBlock"
+    },
+    "mudra_recommendation": {
+      "$ref": "#/$defs/MudraBlock"
+    },
+    "aroma_protocol": {
+      "$ref": "#/$defs/AromaProtocol"
+    },
+    "movement_load": {
+      "$ref": "#/$defs/LoadBlock"
+    },
+    "thyroid_safety_notes": {
+      "$ref": "#/$defs/ThyroidSafetyNotes"
+    },
+    "body_markers_to_track": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Body Markers To Track",
+      "type": "array"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    },
+    "scales": {
+      "$ref": "#/$defs/DailyScales"
+    },
+    "moon_illumination_pct": {
+      "title": "Moon Illumination Pct",
+      "type": "number"
+    },
+    "matrix_index": {
+      "title": "Matrix Index",
+      "type": "integer"
+    },
+    "rule_trace": {
+      "$ref": "#/$defs/RuleTrace"
+    },
+    "debug": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Debug"
+    }
+  },
+  "required": [
+    "date",
+    "weekday",
+    "lunar_day_number",
+    "moon_phase",
+    "nakshatra",
+    "ekadashi_flag",
+    "pradosh_flag",
+    "day_type",
+    "body_effect_summary",
+    "nutrition",
+    "supplements",
+    "breathing_practice",
+    "mudra_recommendation",
+    "aroma_protocol",
+    "movement_load",
+    "thyroid_safety_notes",
+    "body_markers_to_track",
+    "warnings",
+    "scales",
+    "moon_illumination_pct",
+    "matrix_index",
+    "rule_trace"
+  ],
+  "title": "DailyProtocol",
+  "type": "object"
+}

@@ -1,0 +1,61 @@
+{
+  "$defs": {
+    "BreathingPractice": {
+      "enum": [
+        "diaphragmatic",
+        "lengthened_exhale",
+        "sama_vritti",
+        "nadi_shodhana_gentle",
+        "bhramari",
+        "chandra_bhedana"
+      ],
+      "title": "BreathingPractice",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "practice": {
+      "$ref": "#/$defs/BreathingPractice"
+    },
+    "title_ru": {
+      "title": "Title Ru",
+      "type": "string"
+    },
+    "minutes": {
+      "title": "Minutes",
+      "type": "integer"
+    },
+    "best_time": {
+      "title": "Best Time",
+      "type": "string"
+    },
+    "posture": {
+      "title": "Posture",
+      "type": "string"
+    },
+    "technique": {
+      "title": "Technique",
+      "type": "string"
+    },
+    "tongue_position": {
+      "title": "Tongue Position",
+      "type": "string"
+    },
+    "contraindication": {
+      "title": "Contraindication",
+      "type": "string"
+    }
+  },
+  "required": [
+    "practice",
+    "title_ru",
+    "minutes",
+    "best_time",
+    "posture",
+    "technique",
+    "tongue_position",
+    "contraindication"
+  ],
+  "title": "BreathBlock",
+  "type": "object"
+}

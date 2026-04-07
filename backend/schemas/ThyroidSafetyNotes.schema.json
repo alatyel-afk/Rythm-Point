@@ -1,0 +1,21 @@
+{
+  "properties": {
+    "mode": {
+      "default": "conservative_thyroid_safe",
+      "title": "Mode",
+      "type": "string"
+    },
+    "notes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "notes"
+  ],
+  "title": "ThyroidSafetyNotes",
+  "type": "object"
+}

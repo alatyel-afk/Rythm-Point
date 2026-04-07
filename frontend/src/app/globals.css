@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-main: #dce8f4;
+  --bg-main-2: #d4e1ee;
+  --bg-card: #fdfeff;
+  --bg-card-soft: #f4f8fc;
+
+  --text-main: #182331;
+  --text-strong: #0f1b28;
+  --text-soft: #55687c;
+  --text-muted: #7a8898;
+
+  --border: #c7d5e3;
+  --border-strong: #b6c7d8;
+
+  --accent-main: #4c6f91;
+  --accent-dark: #35546f;
+  --accent-soft: #dce8f4;
+
+  --accent-secondary: #6d87a3;
+  --accent-secondary-soft: #e8f0f8;
+
+  --accent-info: #5f7f9c;
+  --accent-info-soft: #e7eef6;
+
+  --accent-danger: #8c6077;
+  --accent-danger-soft: #f2e7ed;
+
+  --accent-neutral: #70859a;
+  --accent-neutral-soft: #e9eff5;
+
+  --shadow-soft: 0 12px 28px rgba(24, 35, 49, 0.08);
+
+  /* Каналы RGB для модификаторов прозрачности Tailwind (bg-accent/30 и т.д.) */
+  --accent-main-rgb: 76 111 145;
+  --accent-danger-rgb: 140 96 119;
+
+  /* Совместимость со старыми именами в произвольном CSS */
+  --bg: var(--bg-main);
+  --surface: var(--bg-card-soft);
+  --surface-2: var(--bg-card);
+  --text: var(--text-main);
+  --accent: var(--accent-main);
+  --accent-2: var(--accent-secondary);
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.card {
+  background: var(--bg-card);
+  border-radius: 1rem;
+  border: 1px solid var(--border-strong);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.2rem 0.75rem;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.scale-bar {
+  height: 6px;
+  border-radius: 9999px;
+  transition: all 0.5s ease-out;
+}
+
+.section-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}

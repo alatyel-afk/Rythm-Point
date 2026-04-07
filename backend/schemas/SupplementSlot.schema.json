@@ -1,0 +1,18 @@
+{
+  "properties": {
+    "time": {
+      "title": "Time",
+      "type": "string"
+    },
+    "items": {
+      "title": "Items",
+      "type": "string"
+    }
+  },
+  "required": [
+    "time",
+    "items"
+  ],
+  "title": "SupplementSlot",
+  "type": "object"
+}

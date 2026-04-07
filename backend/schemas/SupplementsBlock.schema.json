@@ -1,0 +1,46 @@
+{
+  "$defs": {
+    "SupplementSlot": {
+      "properties": {
+        "time": {
+          "title": "Time",
+          "type": "string"
+        },
+        "items": {
+          "title": "Items",
+          "type": "string"
+        }
+      },
+      "required": [
+        "time",
+        "items"
+      ],
+      "title": "SupplementSlot",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "slots": {
+      "items": {
+        "$ref": "#/$defs/SupplementSlot"
+      },
+      "title": "Slots",
+      "type": "array"
+    },
+    "endoluten_today": {
+      "title": "Endoluten Today",
+      "type": "boolean"
+    },
+    "endoluten_note": {
+      "title": "Endoluten Note",
+      "type": "string"
+    }
+  },
+  "required": [
+    "slots",
+    "endoluten_today",
+    "endoluten_note"
+  ],
+  "title": "SupplementsBlock",
+  "type": "object"
+}

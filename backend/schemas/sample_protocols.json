@@ -1,0 +1,1016 @@
+[
+  {
+    "scenario": "1. Stable day, no signals",
+    "day_type": "stable_day",
+    "scales": {
+      "water_retention_risk": 45,
+      "release_drainage_potential": 50,
+      "nervous_system_load": 40,
+      "need_for_rhythm_precision": 45
+    },
+    "meal_matrix": "F_rice",
+    "meal": {
+      "protein": "телятина 105 г",
+      "vegetables": "рис 50–60 г, сладкий перец",
+      "full_description": "Телятина 105 г, рис 50–60 г, сладкий перец"
+    },
+    "rice": {
+      "allowed": true,
+      "reason": "Стабильный день, низкий риск — рис малой порцией с перцем и мятой."
+    },
+    "breathing": {
+      "practice": "lengthened_exhale",
+      "title_ru": "Удлинённый выдох 1:2",
+      "minutes": 8,
+      "best_time": "Утро после горячей воды или за 20 минут до обеда.",
+      "posture": "Сидя с прямой спиной, ноги на полу или скрестив. Руки на коленях ладонями вниз. Плечи расслаблены, грудная клетка открыта.",
+      "technique": "Вдох через нос на 4 счёта. Выдох через нос на 8 счётов — плавно, без усилия в конце. Если 1:2 трудно, начать с 4:6, через 3 минуты перейти к 4:8. Ритм монотонный, без задержек между фазами. Выдох должен заканчиваться естественно, без выжимания воздуха.",
+      "tongue_position": "Кончик языка мягко касается верхнего нёба за передними зубами (набхи-мудра).",
+      "contraindication": "Не на полный желудок. Прекратить при головокружении, вернуться к обычному носовому."
+    },
+    "mudra": {
+      "mudra": "none",
+      "suggested": false,
+      "name_ru": "нет",
+      "duration_minutes": 0,
+      "reason": "Сегодня мудра не рекомендуется по типу дня.",
+      "finger_technique": "—",
+      "posture": "—",
+      "breathing_during": "—",
+      "tongue_position": "—",
+      "when_to_do": "—",
+      "caution": "—"
+    },
+    "aroma": {
+      "morning": "frankincense",
+      "morning_detail": "ладан — 1 капля на аромакамень, 3 минуты проветривание, структура утра.",
+      "daytime": "geranium",
+      "daytime_detail": "герань — 1 капля, рабочее место, баланс дня.",
+      "evening": "rose",
+      "evening_detail": "роза — 1 капля, 20 минут до сна, мягкое завершение."
+    },
+    "supplements_endoluten_today": true,
+    "signal_override_warnings": [],
+    "thyroid_safety_notes": [
+      "Йодосодержащие добавки, водоросли и келп не рекомендуются автоматически.",
+      "Селен остаётся только в рамках утверждённого стека (с обедом). Не является лечением.",
+      "Дыхательные практики и мудры не являются терапией щитовидной железы.",
+      "Режим: стабильное время еды, без эскалации стимуляторов, без экстремального голодания."
+    ],
+    "rule_trace": {
+      "rice": [
+        "RICE: force_rice_forbidden=False, checking day_type=stable_day",
+        "RICE: day_type not in forbidden set, checking water_retention_risk=45",
+        "RICE: stable_day + water_retention_risk=45 < 55 → ALLOWED"
+      ],
+      "breathing": [
+        "BREATH: day_type=stable_day → default practice=lengthened_exhale",
+        "BREATH: mental_overload=False, no override",
+        "BREATH: selected=lengthened_exhale, minutes=8"
+      ],
+      "mudra": [
+        "MUDRA: day_type=stable_day → none (not needed on stable/recovery)",
+        "MUDRA: final=none, suggested=False"
+      ],
+      "aroma": [
+        "AROMA: day_type=stable_day",
+        "AROMA: morning=frankincense (ладан)",
+        "AROMA: daytime=geranium (герань)",
+        "AROMA: evening=rose (роза)"
+      ],
+      "body_signals": [
+        "BODY_SIGNAL: no signals provided, using defaults"
+      ]
+    }
+  },
+  {
+    "scenario": "2. Ekadashi day",
+    "day_type": "ekadashi_day",
+    "scales": {
+      "water_retention_risk": 35,
+      "release_drainage_potential": 70,
+      "nervous_system_load": 45,
+      "need_for_rhythm_precision": 55
+    },
+    "meal_matrix": "D_ekadashi",
+    "meal": {
+      "protein": "—",
+      "vegetables": "кабачок, цветная капуста, перец, черри 3 шт.",
+      "full_description": "Кабачок, цветная капуста, перец, 3 черри — без мяса"
+    },
+    "rice": {
+      "allowed": false,
+      "reason": "Рис запрещён в тип дня ekadashi_day."
+    },
+    "breathing": {
+      "practice": "sama_vritti",
+      "title_ru": "Самавритти (равные фазы)",
+      "minutes": 6,
+      "best_time": "Середина дня при ментальной нагрузке или за 15 минут до обеда.",
+      "posture": "Сидя с ровной спиной, можно на стуле. Руки на коленях ладонями вверх (джняна-мудра — большой и указательный палец соединены, если удобно). Глаза закрыты или полуприкрыты.",
+      "technique": "Вдох через нос на 4 счёта. Задержка на 4 счёта (не форсировать — воздух просто остаётся). Выдох через нос на 4 счёта. Задержка на пустых лёгких на 4 счёта (только если нет тревоги — иначе пропустить). Все фазы равные. Если 4 тяжело — начать с 3. Через 3 минуты оценить: если спокойно, продолжить; если сжимает — убрать задержки и дышать 4:4 без пауз.",
+      "tongue_position": "Язык прижат к верхнему нёбу мягко (набхи-мудра).",
+      "contraindication": "Прекратить при спазме в груди или тревоге. Убрать задержки и вернуться к носовому."
+    },
+    "mudra": {
+      "mudra": "apana",
+      "suggested": true,
+      "name_ru": "Апана-мудра",
+      "duration_minutes": 4,
+      "reason": "Мягкий дренаж, поддержка выведения.",
+      "finger_technique": "На обеих руках: соединить кончики среднего и безымянного пальцев с кончиком большого пальца. Давление лёгкое, подушечки касаются. Указательный палец и мизинец выпрямлены, расслаблены.",
+      "posture": "Сидя с прямой спиной. Руки на коленях ладонями вверх. Плечи расслаблены. Можно прикрыть глаза.",
+      "breathing_during": "Дыхание носовое, с мягким удлинением выдоха. Вдох на 4 счёта, выдох на 5–6 счётов. Без задержек.",
+      "tongue_position": "Кончик языка мягко касается верхнего нёба за передними зубами (набхи-мудра).",
+      "when_to_do": "Через 30–40 минут после обеда или в первой половине дня. Хорошо работает в экадаши и прадошу. Не на голодный желудок с утра.",
+      "caution": "Не на полный желудок с ощущением тяжести. Не при диарее."
+    },
+    "aroma": {
+      "morning": "rose",
+      "morning_detail": "роза — мягко, без перегрева.",
+      "daytime": "anti_stress_blend",
+      "daytime_detail": "смесь «Антистресс О. Ирисовой» — поддержка в середине дня.",
+      "evening": "rose",
+      "evening_detail": "роза — спокойствие."
+    },
+    "supplements_endoluten_today": true,
+    "signal_override_warnings": [],
+    "thyroid_safety_notes": [
+      "Йодосодержащие добавки, водоросли и келп не рекомендуются автоматически.",
+      "Селен остаётся только в рамках утверждённого стека (с обедом). Не является лечением.",
+      "Дыхательные практики и мудры не являются терапией щитовидной железы.",
+      "Режим: стабильное время еды, без эскалации стимуляторов, без экстремального голодания."
+    ],
+    "rule_trace": {
+      "rice": [
+        "RICE: force_rice_forbidden=False, checking day_type=ekadashi_day",
+        "RICE: day_type=ekadashi_day in RICE_FORBIDDEN_DAY_TYPES → FORBIDDEN"
+      ],
+      "breathing": [
+        "BREATH: day_type=ekadashi_day → default practice=sama_vritti",
+        "BREATH: mental_overload=False, no override",
+        "BREATH: selected=sama_vritti, minutes=6"
+      ],
+      "mudra": [
+        "MUDRA: day_type=ekadashi_day → apana (elimination support)",
+        "MUDRA: final=apana, suggested=True, duration=4min"
+      ],
+      "aroma": [
+        "AROMA: day_type=ekadashi_day",
+        "AROMA: morning=rose (роза)",
+        "AROMA: daytime=anti_stress_blend (смесь «Антистресс О. Ирисовой»)",
+        "AROMA: evening=rose (роза)"
+      ],
+      "body_signals": [
+        "BODY_SIGNAL: no signals provided, using defaults"
+      ]
+    }
+  },
+  {
+    "scenario": "3. Pradosh day",
+    "day_type": "pradosh_day",
+    "scales": {
+      "water_retention_risk": 50,
+      "release_drainage_potential": 60,
+      "nervous_system_load": 55,
+      "need_for_rhythm_precision": 60
+    },
+    "meal_matrix": "E_pradosh",
+    "meal": {
+      "protein": "курица 110 г",
+      "vegetables": "кабачок, цветная капуста",
+      "full_description": "Ранний обед: курица 110 г, кабачок, цветная капуста"
+    },
+    "rice": {
+      "allowed": false,
+      "reason": "Рис запрещён в тип дня pradosh_day."
+    },
+    "breathing": {
+      "practice": "lengthened_exhale",
+      "title_ru": "Удлинённый выдох 1:2",
+      "minutes": 8,
+      "best_time": "Утро после горячей воды или за 20 минут до обеда.",
+      "posture": "Сидя с прямой спиной, ноги на полу или скрестив. Руки на коленях ладонями вниз. Плечи расслаблены, грудная клетка открыта.",
+      "technique": "Вдох через нос на 4 счёта. Выдох через нос на 8 счётов — плавно, без усилия в конце. Если 1:2 трудно, начать с 4:6, через 3 минуты перейти к 4:8. Ритм монотонный, без задержек между фазами. Выдох должен заканчиваться естественно, без выжимания воздуха.",
+      "tongue_position": "Кончик языка мягко касается верхнего нёба за передними зубами (набхи-мудра).",
+      "contraindication": "Не на полный желудок. Прекратить при головокружении, вернуться к обычному носовому."
+    },
+    "mudra": {
+      "mudra": "apana",
+      "suggested": true,
+      "name_ru": "Апана-мудра",
+      "duration_minutes": 4,
+      "reason": "Мягкий дренаж, поддержка выведения.",
+      "finger_technique": "На обеих руках: соединить кончики среднего и безымянного пальцев с кончиком большого пальца. Давление лёгкое, подушечки касаются. Указательный палец и мизинец выпрямлены, расслаблены.",
+      "posture": "Сидя с прямой спиной. Руки на коленях ладонями вверх. Плечи расслаблены. Можно прикрыть глаза.",
+      "breathing_during": "Дыхание носовое, с мягким удлинением выдоха. Вдох на 4 счёта, выдох на 5–6 счётов. Без задержек.",
+      "tongue_position": "Кончик языка мягко касается верхнего нёба за передними зубами (набхи-мудра).",
+      "when_to_do": "Через 30–40 минут после обеда или в первой половине дня. Хорошо работает в экадаши и прадошу. Не на голодный желудок с утра.",
+      "caution": "Не на полный желудок с ощущением тяжести. Не при диарее."
+    },
+    "aroma": {
+      "morning": "frankincense",
+      "morning_detail": "ладан — структура утра.",
+      "daytime": "rose",
+      "daytime_detail": "роза — при нервном фоне.",
+      "evening": "geranium",
+      "evening_detail": "герань — коротко перед сном."
+    },
+    "supplements_endoluten_today": false,
+    "signal_override_warnings": [],
+    "thyroid_safety_notes": [
+      "Йодосодержащие добавки, водоросли и келп не рекомендуются автоматически.",
+      "Селен остаётся только в рамках утверждённого стека (с обедом). Не является лечением.",
+      "Дыхательные практики и мудры не являются терапией щитовидной железы.",
+      "Режим: стабильное время еды, без эскалации стимуляторов, без экстремального голодания."
+    ],
+    "rule_trace": {
+      "rice": [
+        "RICE: force_rice_forbidden=False, checking day_type=pradosh_day",
+        "RICE: day_type=pradosh_day in RICE_FORBIDDEN_DAY_TYPES → FORBIDDEN"
+      ],
+      "breathing": [
+        "BREATH: day_type=pradosh_day → default practice=lengthened_exhale",
+        "BREATH: mental_overload=False, no override",
+        "BREATH: selected=lengthened_exhale, minutes=8"
+      ],
+      "mudra": [
+        "MUDRA: day_type=pradosh_day → apana (elimination support)",
+        "MUDRA: final=apana, suggested=True, duration=4min"
+      ],
+      "aroma": [
+        "AROMA: day_type=pradosh_day",
+        "AROMA: morning=frankincense (ладан)",
+        "AROMA: daytime=rose (роза)",
+        "AROMA: evening=geranium (герань)"
+      ],
+      "body_signals": [
+        "BODY_SIGNAL: no signals provided, using defaults"
+      ]
+    }
+  },
+  {
+    "scenario": "4. Pre-full-moon retention",
+    "day_type": "pre_full_moon_retention_day",
+    "scales": {
+      "water_retention_risk": 68,
+      "release_drainage_potential": 40,
+      "nervous_system_load": 55,
+      "need_for_rhythm_precision": 50
+    },
+    "meal_matrix": "C_retention",
+    "meal": {
+      "protein": "курица 110 г",
+      "vegetables": "кабачок, цветная капуста",
+      "full_description": "Курица 110 г, кабачок, цветная капуста — без риса"
+    },
+    "rice": {
+      "allowed": false,
+      "reason": "Рис запрещён в тип дня pre_full_moon_retention_day."
+    },
+    "breathing": {
+      "practice": "bhramari",
+      "title_ru": "Бхрамари (жужжание пчелы)",
+      "minutes": 4,
+      "best_time": "Вечер 16:00–17:30 или при перегрузе головы в любое время.",
+      "posture": "Сидя с прямой спиной. Указательные пальцы мягко закрывают ушные раковины (шанмукхи-мудра): большие пальцы — на козелках ушей, указательные — на закрытых веках (без давления на глаза), средние — по бокам носа, безымянные — над верхней губой, мизинцы — под нижней губой. Если полная шанмукхи сложна, достаточно закрыть уши указательными пальцами.",
+      "technique": "Вдох через нос на 4 счёта. На выдохе — мягкое непрерывное гудение «мммм» через закрытые губы. Звук низкий, вибрация ощущается в переносице и макушке. Выдох длится 6–8 счётов. Между циклами — 1 обычный вдох-выдох. Повторить 6–8 циклов. Громкость минимальная — комфортная вибрация, не напряжение.",
+      "tongue_position": "Язык свободно лежит в полости рта, не прижат, губы мягко сомкнуты.",
+      "contraindication": "Не повышать громкость. Прекратить при дискомфорте в ушах или давлении в голове."
+    },
+    "mudra": {
+      "mudra": "none",
+      "suggested": false,
+      "name_ru": "нет",
+      "duration_minutes": 0,
+      "reason": "Сегодня мудра не рекомендуется по типу дня.",
+      "finger_technique": "—",
+      "posture": "—",
+      "breathing_during": "—",
+      "tongue_position": "—",
+      "when_to_do": "—",
+      "caution": "—"
+    },
+    "aroma": {
+      "morning": "geranium",
+      "morning_detail": "герань — при пасмурной голове утром.",
+      "daytime": "anti_stress_blend",
+      "daytime_detail": "смесь «Антистресс О. Ирисовой» — 20 минут в середине дня.",
+      "evening": "rose",
+      "evening_detail": "роза — без стимулирующих ароматов вечером."
+    },
+    "supplements_endoluten_today": false,
+    "signal_override_warnings": [],
+    "thyroid_safety_notes": [
+      "Йодосодержащие добавки, водоросли и келп не рекомендуются автоматически.",
+      "Селен остаётся только в рамках утверждённого стека (с обедом). Не является лечением.",
+      "Дыхательные практики и мудры не являются терапией щитовидной железы.",
+      "Режим: стабильное время еды, без эскалации стимуляторов, без экстремального голодания."
+    ],
+    "rule_trace": {
+      "rice": [
+        "RICE: force_rice_forbidden=False, checking day_type=pre_full_moon_retention_day",
+        "RICE: day_type=pre_full_moon_retention_day in RICE_FORBIDDEN_DAY_TYPES → FORBIDDEN"
+      ],
+      "breathing": [
+        "BREATH: day_type=pre_full_moon_retention_day → default practice=bhramari",
+        "BREATH: mental_overload=False, no override",
+        "BREATH: selected=bhramari, minutes=4"
+      ],
+      "mudra": [
+        "MUDRA: day_type=pre_full_moon_retention_day → none (retention risk)",
+        "MUDRA: final=none, suggested=False"
+      ],
+      "aroma": [
+        "AROMA: day_type=pre_full_moon_retention_day",
+        "AROMA: morning=geranium (герань)",
+        "AROMA: daytime=anti_stress_blend (смесь «Антистресс О. Ирисовой»)",
+        "AROMA: evening=rose (роза)"
+      ],
+      "body_signals": [
+        "BODY_SIGNAL: no signals provided, using defaults"
+      ]
+    }
+  },
+  {
+    "scenario": "5. Pre-new-moon precision",
+    "day_type": "pre_new_moon_precision_day",
+    "scales": {
+      "water_retention_risk": 42,
+      "release_drainage_potential": 48,
+      "nervous_system_load": 52,
+      "need_for_rhythm_precision": 65
+    },
+    "meal_matrix": "B_nervous",
+    "meal": {
+      "protein": "телятина 100 г",
+      "vegetables": "брокколи, спаржа",
+      "full_description": "Телятина 100 г, брокколи, спаржа"
+    },
+    "rice": {
+      "allowed": false,
+      "reason": "Рис запрещён в тип дня pre_new_moon_precision_day."
+    },
+    "breathing": {
+      "practice": "diaphragmatic",
+      "title_ru": "Диафрагмальное дыхание",
+      "minutes": 8,
+      "best_time": "Утро после горячей воды или вечер до 17:30.",
+      "posture": "Сидя с ровной спиной, стопы на полу. Можно полулёжа с согнутыми коленями, если утром трудно сидеть. Плечи опущены, руки на нижних рёбрах или на животе.",
+      "technique": "Вдох через нос на 4 счёта — живот мягко расширяется вперёд и в стороны, грудная клетка почти не поднимается. Выдох через нос на 5–6 счётов — живот мягко возвращается к позвоночнику без напряжения. Между вдохом и выдохом нет паузы. Ритм ровный, без рывков. Первые 2 минуты — адаптация, затем углубить амплитуду.",
+      "tongue_position": "Язык свободно лежит за нижними зубами, не прижат к нёбу.",
+      "contraindication": "Не увеличивать глубину после 18:00 — только спокойное носовое дыхание."
+    },
+    "mudra": {
+      "mudra": "none",
+      "suggested": false,
+      "name_ru": "нет",
+      "duration_minutes": 0,
+      "reason": "Сегодня мудра не рекомендуется по типу дня.",
+      "finger_technique": "—",
+      "posture": "—",
+      "breathing_during": "—",
+      "tongue_position": "—",
+      "when_to_do": "—",
+      "caution": "—"
+    },
+    "aroma": {
+      "morning": "frankincense",
+      "morning_detail": "ладан — точность и фокус утром.",
+      "daytime": "leuzea",
+      "daytime_detail": "левзея — 1 капля только при сонливости, не при тревоге.",
+      "evening": "rose",
+      "evening_detail": "роза — без стимулирующей логики вечером."
+    },
+    "supplements_endoluten_today": true,
+    "signal_override_warnings": [],
+    "thyroid_safety_notes": [
+      "Йодосодержащие добавки, водоросли и келп не рекомендуются автоматически.",
+      "Селен остаётся только в рамках утверждённого стека (с обедом). Не является лечением.",
+      "Дыхательные практики и мудры не являются терапией щитовидной железы.",
+      "Режим: стабильное время еды, без эскалации стимуляторов, без экстремального голодания."
+    ],
+    "rule_trace": {
+      "rice": [
+        "RICE: force_rice_forbidden=False, checking day_type=pre_new_moon_precision_day",
+        "RICE: day_type=pre_new_moon_precision_day in RICE_FORBIDDEN_DAY_TYPES → FORBIDDEN"
+      ],
+      "breathing": [
+        "BREATH: day_type=pre_new_moon_precision_day → default practice=diaphragmatic",
+        "BREATH: mental_overload=False, no override",
+        "BREATH: selected=diaphragmatic, minutes=8"
+      ],
+      "mudra": [
+        "MUDRA: day_type=pre_new_moon_precision_day → none (no rule matched)",
+        "MUDRA: final=none, suggested=False"
+      ],
+      "aroma": [
+        "AROMA: day_type=pre_new_moon_precision_day",
+        "AROMA: morning=frankincense (ладан)",
+        "AROMA: daytime=leuzea (левзея)",
+        "AROMA: evening=rose (роза)"
+      ],
+      "body_signals": [
+        "BODY_SIGNAL: no signals provided, using defaults"
+      ]
+    }
+  },
+  {
+    "scenario": "6. Drainage day",
+    "day_type": "drainage_day",
+    "scales": {
+      "water_retention_risk": 50,
+      "release_drainage_potential": 75,
+      "nervous_system_load": 40,
+      "need_for_rhythm_precision": 50
+    },
+    "meal_matrix": "C_retention",
+    "meal": {
+      "protein": "курица 110 г",
+      "vegetables": "кабачок, цветная капуста",
+      "full_description": "Курица 110 г, кабачок, цветная капуста — без риса"
+    },
+    "rice": {
+      "allowed": false,
+      "reason": "По умолчанию рис не включён."
+    },
+    "breathing": {
+      "practice": "nadi_shodhana_gentle",
+      "title_ru": "Нади-шодхана мягкая (попеременное дыхание)",
+      "minutes": 7,
+      "best_time": "До обеда, 10:00–12:00, для ясности без стимуляции.",
+      "posture": "Сидя с прямой спиной. Левая рука на колене. Правая рука в вишну-мудре: указательный и средний пальцы согнуты к ладони, большой палец — для правой ноздри, безымянный — для левой.",
+      "technique": "Закрыть правую ноздрю большим пальцем правой руки. Вдох через левую на 4 счёта. Закрыть левую ноздрю безымянным пальцем, отпустить правую. Выдох через правую на 4 счёта. Вдох через правую на 4 счёта. Закрыть правую, отпустить левую. Выдох через левую на 4 счёта. Это 1 цикл. Повторить 8–12 циклов. Давление пальцев минимальное — только прикрыть, не зажимать. Если нос заложен с одной стороны, дышать через открытую и пропустить закрытую фазу.",
+      "tongue_position": "Язык прижат к верхнему нёбу (набхи-мудра) на протяжении всей практики.",
+      "contraindication": "Короткие циклы, без гипервентиляции. При головокружении остановиться."
+    },
+    "mudra": {
+      "mudra": "apana",
+      "suggested": true,
+      "name_ru": "Апана-мудра",
+      "duration_minutes": 4,
+      "reason": "Мягкий дренаж, поддержка выведения.",
+      "finger_technique": "На обеих руках: соединить кончики среднего и безымянного пальцев с кончиком большого пальца. Давление лёгкое, подушечки касаются. Указательный палец и мизинец выпрямлены, расслаблены.",
+      "posture": "Сидя с прямой спиной. Руки на коленях ладонями вверх. Плечи расслаблены. Можно прикрыть глаза.",
+      "breathing_during": "Дыхание носовое, с мягким удлинением выдоха. Вдох на 4 счёта, выдох на 5–6 счётов. Без задержек.",
+      "tongue_position": "Кончик языка мягко касается верхнего нёба за передними зубами (набхи-мудра).",
+      "when_to_do": "Через 30–40 минут после обеда или в первой половине дня. Хорошо работает в экадаши и прадошу. Не на голодный желудок с утра.",
+      "caution": "Не на полный желудок с ощущением тяжести. Не при диарее."
+    },
+    "aroma": {
+      "morning": "rosemary",
+      "morning_detail": "розмарин — 1 капля утром, ясность без стимуляции.",
+      "daytime": "geranium",
+      "daytime_detail": "герань — баланс при раздражении.",
+      "evening": "frankincense",
+      "evening_detail": "ладан — разбавленно, если голова спокойна."
+    },
+    "supplements_endoluten_today": true,
+    "signal_override_warnings": [],
+    "thyroid_safety_notes": [
+      "Йодосодержащие добавки, водоросли и келп не рекомендуются автоматически.",
+      "Селен остаётся только в рамках утверждённого стека (с обедом). Не является лечением.",
+      "Дыхательные практики и мудры не являются терапией щитовидной железы.",
+      "Режим: стабильное время еды, без эскалации стимуляторов, без экстремального голодания."
+    ],
+    "rule_trace": {
+      "rice": [
+        "RICE: force_rice_forbidden=False, checking day_type=drainage_day",
+        "RICE: day_type not in forbidden set, checking water_retention_risk=50",
+        "RICE: no allow rule matched → FORBIDDEN by default"
+      ],
+      "breathing": [
+        "BREATH: day_type=drainage_day → default practice=nadi_shodhana_gentle",
+        "BREATH: mental_overload=False, no override",
+        "BREATH: selected=nadi_shodhana_gentle, minutes=7"
+      ],
+      "mudra": [
+        "MUDRA: day_type=drainage_day → apana (drainage support)",
+        "MUDRA: final=apana, suggested=True, duration=4min"
+      ],
+      "aroma": [
+        "AROMA: day_type=drainage_day",
+        "AROMA: morning=rosemary (розмарин)",
+        "AROMA: daytime=geranium (герань)",
+        "AROMA: evening=frankincense (ладан)"
+      ],
+      "body_signals": [
+        "BODY_SIGNAL: no signals provided, using defaults"
+      ]
+    }
+  },
+  {
+    "scenario": "7. High sensitivity day",
+    "day_type": "high_sensitivity_day",
+    "scales": {
+      "water_retention_risk": 55,
+      "release_drainage_potential": 45,
+      "nervous_system_load": 78,
+      "need_for_rhythm_precision": 70
+    },
+    "meal_matrix": "B_nervous",
+    "meal": {
+      "protein": "телятина 100 г",
+      "vegetables": "брокколи, спаржа",
+      "full_description": "Телятина 100 г, брокколи, спаржа"
+    },
+    "rice": {
+      "allowed": false,
+      "reason": "По умолчанию рис не включён."
+    },
+    "breathing": {
+      "practice": "bhramari",
+      "title_ru": "Бхрамари (жужжание пчелы)",
+      "minutes": 4,
+      "best_time": "Вечер 16:00–17:30 или при перегрузе головы в любое время.",
+      "posture": "Сидя с прямой спиной. Указательные пальцы мягко закрывают ушные раковины (шанмукхи-мудра): большие пальцы — на козелках ушей, указательные — на закрытых веках (без давления на глаза), средние — по бокам носа, безымянные — над верхней губой, мизинцы — под нижней губой. Если полная шанмукхи сложна, достаточно закрыть уши указательными пальцами.",
+      "technique": "Вдох через нос на 4 счёта. На выдохе — мягкое непрерывное гудение «мммм» через закрытые губы. Звук низкий, вибрация ощущается в переносице и макушке. Выдох длится 6–8 счётов. Между циклами — 1 обычный вдох-выдох. Повторить 6–8 циклов. Громкость минимальная — комфортная вибрация, не напряжение.",
+      "tongue_position": "Язык свободно лежит в полости рта, не прижат, губы мягко сомкнуты.",
+      "contraindication": "Не повышать громкость. Прекратить при дискомфорте в ушах или давлении в голове."
+    },
+    "mudra": {
+      "mudra": "vayu",
+      "suggested": true,
+      "name_ru": "Ваю-мудра",
+      "duration_minutes": 3,
+      "reason": "Снижение нервного перегруза.",
+      "finger_technique": "На обеих руках: согнуть указательный палец так, чтобы его подушечка касалась основания большого пальца (не кончика). Большой палец мягко прижимает сверху первую фалангу указательного. Средний, безымянный и мизинец — выпрямлены, расслаблены.",
+      "posture": "Сидя с ровной спиной, можно на стуле. Руки на коленях ладонями вверх. Плечи вниз, локти свободны. Глаза можно закрыть.",
+      "breathing_during": "Дыхание носовое, ровное. Вдох 4 счёта, выдох 4 счёта. Без задержек, без усилия. Если тревога — удлинить выдох до 6.",
+      "tongue_position": "Язык свободно лежит в полости рта, расслаблен. Не прижат к нёбу.",
+      "when_to_do": "При нервном напряжении, тревоге, внутреннем беспокойстве — в любое время дня. Максимум 3 минуты за один подход. Не держать дольше 5 минут подряд.",
+      "caution": "При тревоге сократить до 2 минут. Не использовать непрерывно весь день."
+    },
+    "aroma": {
+      "morning": "rose",
+      "morning_detail": "роза — очень мягко, 1 капля.",
+      "daytime": "anti_stress_blend",
+      "daytime_detail": "смесь «Антистресс О. Ирисовой» — 15 минут при нервном фоне.",
+      "evening": "rose",
+      "evening_detail": "роза — завершение без стимуляции."
+    },
+    "supplements_endoluten_today": false,
+    "signal_override_warnings": [],
+    "thyroid_safety_notes": [
+      "Йодосодержащие добавки, водоросли и келп не рекомендуются автоматически.",
+      "Селен остаётся только в рамках утверждённого стека (с обедом). Не является лечением.",
+      "Дыхательные практики и мудры не являются терапией щитовидной железы.",
+      "Режим: стабильное время еды, без эскалации стимуляторов, без экстремального голодания."
+    ],
+    "rule_trace": {
+      "rice": [
+        "RICE: force_rice_forbidden=False, checking day_type=high_sensitivity_day",
+        "RICE: day_type not in forbidden set, checking water_retention_risk=55",
+        "RICE: no allow rule matched → FORBIDDEN by default"
+      ],
+      "breathing": [
+        "BREATH: day_type=high_sensitivity_day → default practice=bhramari",
+        "BREATH: mental_overload=False, no override",
+        "BREATH: selected=bhramari, minutes=4"
+      ],
+      "mudra": [
+        "MUDRA: day_type=high_sensitivity_day → vayu (nerve calming)",
+        "MUDRA: final=vayu, suggested=True, duration=3min"
+      ],
+      "aroma": [
+        "AROMA: day_type=high_sensitivity_day",
+        "AROMA: morning=rose (роза)",
+        "AROMA: daytime=anti_stress_blend (смесь «Антистресс О. Ирисовой»)",
+        "AROMA: evening=rose (роза)"
+      ],
+      "body_signals": [
+        "BODY_SIGNAL: no signals provided, using defaults"
+      ]
+    }
+  },
+  {
+    "scenario": "8. Caution day",
+    "day_type": "caution_day",
+    "scales": {
+      "water_retention_risk": 74,
+      "release_drainage_potential": 35,
+      "nervous_system_load": 72,
+      "need_for_rhythm_precision": 65
+    },
+    "meal_matrix": "C_retention",
+    "meal": {
+      "protein": "курица 110 г",
+      "vegetables": "кабачок, цветная капуста",
+      "full_description": "Курица 110 г, кабачок, цветная капуста — без риса"
+    },
+    "rice": {
+      "allowed": false,
+      "reason": "Рис запрещён в тип дня caution_day."
+    },
+    "breathing": {
+      "practice": "diaphragmatic",
+      "title_ru": "Диафрагмальное дыхание",
+      "minutes": 8,
+      "best_time": "Утро после горячей воды или вечер до 17:30.",
+      "posture": "Сидя с ровной спиной, стопы на полу. Можно полулёжа с согнутыми коленями, если утром трудно сидеть. Плечи опущены, руки на нижних рёбрах или на животе.",
+      "technique": "Вдох через нос на 4 счёта — живот мягко расширяется вперёд и в стороны, грудная клетка почти не поднимается. Выдох через нос на 5–6 счётов — живот мягко возвращается к позвоночнику без напряжения. Между вдохом и выдохом нет паузы. Ритм ровный, без рывков. Первые 2 минуты — адаптация, затем углубить амплитуду.",
+      "tongue_position": "Язык свободно лежит за нижними зубами, не прижат к нёбу.",
+      "contraindication": "Не увеличивать глубину после 18:00 — только спокойное носовое дыхание."
+    },
+    "mudra": {
+      "mudra": "none",
+      "suggested": false,
+      "name_ru": "нет",
+      "duration_minutes": 0,
+      "reason": "Сегодня мудра не рекомендуется по типу дня.",
+      "finger_technique": "—",
+      "posture": "—",
+      "breathing_during": "—",
+      "tongue_position": "—",
+      "when_to_do": "—",
+      "caution": "—"
+    },
+    "aroma": {
+      "morning": "geranium",
+      "morning_detail": "герань — при пасмурной голове утром.",
+      "daytime": "anti_stress_blend",
+      "daytime_detail": "смесь «Антистресс О. Ирисовой» — 20 минут в середине дня.",
+      "evening": "rose",
+      "evening_detail": "роза — без стимулирующих ароматов вечером."
+    },
+    "supplements_endoluten_today": false,
+    "signal_override_warnings": [],
+    "thyroid_safety_notes": [
+      "Йодосодержащие добавки, водоросли и келп не рекомендуются автоматически.",
+      "Селен остаётся только в рамках утверждённого стека (с обедом). Не является лечением.",
+      "Дыхательные практики и мудры не являются терапией щитовидной железы.",
+      "Режим: стабильное время еды, без эскалации стимуляторов, без экстремального голодания."
+    ],
+    "rule_trace": {
+      "rice": [
+        "RICE: force_rice_forbidden=False, checking day_type=caution_day",
+        "RICE: day_type=caution_day in RICE_FORBIDDEN_DAY_TYPES → FORBIDDEN"
+      ],
+      "breathing": [
+        "BREATH: day_type=caution_day → default practice=diaphragmatic",
+        "BREATH: mental_overload=False, no override",
+        "BREATH: selected=diaphragmatic, minutes=8"
+      ],
+      "mudra": [
+        "MUDRA: day_type=caution_day → none (no rule matched)",
+        "MUDRA: final=none, suggested=False"
+      ],
+      "aroma": [
+        "AROMA: day_type=caution_day",
+        "AROMA: morning=geranium (герань)",
+        "AROMA: daytime=anti_stress_blend (смесь «Антистресс О. Ирисовой»)",
+        "AROMA: evening=rose (роза)"
+      ],
+      "body_signals": [
+        "BODY_SIGNAL: no signals provided, using defaults"
+      ]
+    }
+  },
+  {
+    "scenario": "9. Recovery after reduction",
+    "day_type": "recovery_day_after_reduction",
+    "scales": {
+      "water_retention_risk": 55,
+      "release_drainage_potential": 50,
+      "nervous_system_load": 52,
+      "need_for_rhythm_precision": 48
+    },
+    "meal_matrix": "A_stable",
+    "meal": {
+      "protein": "телятина 110 г",
+      "vegetables": "цветная капуста, брокколи",
+      "full_description": "Телятина тушёная 110 г, цветная капуста на пару, брокколи"
+    },
+    "rice": {
+      "allowed": false,
+      "reason": "По умолчанию рис не включён."
+    },
+    "breathing": {
+      "practice": "diaphragmatic",
+      "title_ru": "Диафрагмальное дыхание",
+      "minutes": 8,
+      "best_time": "Утро после горячей воды или вечер до 17:30.",
+      "posture": "Сидя с ровной спиной, стопы на полу. Можно полулёжа с согнутыми коленями, если утром трудно сидеть. Плечи опущены, руки на нижних рёбрах или на животе.",
+      "technique": "Вдох через нос на 4 счёта — живот мягко расширяется вперёд и в стороны, грудная клетка почти не поднимается. Выдох через нос на 5–6 счётов — живот мягко возвращается к позвоночнику без напряжения. Между вдохом и выдохом нет паузы. Ритм ровный, без рывков. Первые 2 минуты — адаптация, затем углубить амплитуду.",
+      "tongue_position": "Язык свободно лежит за нижними зубами, не прижат к нёбу.",
+      "contraindication": "Не увеличивать глубину после 18:00 — только спокойное носовое дыхание."
+    },
+    "mudra": {
+      "mudra": "none",
+      "suggested": false,
+      "name_ru": "нет",
+      "duration_minutes": 0,
+      "reason": "Сегодня мудра не рекомендуется по типу дня.",
+      "finger_technique": "—",
+      "posture": "—",
+      "breathing_during": "—",
+      "tongue_position": "—",
+      "when_to_do": "—",
+      "caution": "—"
+    },
+    "aroma": {
+      "morning": "rosemary",
+      "morning_detail": "розмарин — мягко, если нет жжения в глазах.",
+      "daytime": "geranium",
+      "daytime_detail": "герань — баланс.",
+      "evening": "frankincense",
+      "evening_detail": "ладан — не при головной жаре."
+    },
+    "supplements_endoluten_today": false,
+    "signal_override_warnings": [],
+    "thyroid_safety_notes": [
+      "Йодосодержащие добавки, водоросли и келп не рекомендуются автоматически.",
+      "Селен остаётся только в рамках утверждённого стека (с обедом). Не является лечением.",
+      "Дыхательные практики и мудры не являются терапией щитовидной железы.",
+      "Режим: стабильное время еды, без эскалации стимуляторов, без экстремального голодания."
+    ],
+    "rule_trace": {
+      "rice": [
+        "RICE: force_rice_forbidden=False, checking day_type=recovery_day_after_reduction",
+        "RICE: day_type not in forbidden set, checking water_retention_risk=55",
+        "RICE: no allow rule matched → FORBIDDEN by default"
+      ],
+      "breathing": [
+        "BREATH: day_type=recovery_day_after_reduction → default practice=diaphragmatic",
+        "BREATH: mental_overload=False, no override",
+        "BREATH: selected=diaphragmatic, minutes=8"
+      ],
+      "mudra": [
+        "MUDRA: day_type=recovery_day_after_reduction → none (not needed on stable/recovery)",
+        "MUDRA: final=none, suggested=False"
+      ],
+      "aroma": [
+        "AROMA: day_type=recovery_day_after_reduction",
+        "AROMA: morning=rosemary (розмарин)",
+        "AROMA: daytime=geranium (герань)",
+        "AROMA: evening=frankincense (ладан)"
+      ],
+      "body_signals": [
+        "BODY_SIGNAL: no signals provided, using defaults"
+      ]
+    }
+  },
+  {
+    "scenario": "10. Swelling input overrides to retention",
+    "day_type": "stable_day",
+    "scales": {
+      "water_retention_risk": 45,
+      "release_drainage_potential": 50,
+      "nervous_system_load": 40,
+      "need_for_rhythm_precision": 45
+    },
+    "meal_matrix": "C_retention",
+    "meal": {
+      "protein": "говядина 85 г",
+      "vegetables": "цветная капуста, перец",
+      "full_description": "Говядина 85 г, цветная капуста, перец — малая порция"
+    },
+    "rice": {
+      "allowed": false,
+      "reason": "Телесные маркеры указывают на задержку — рис запрещён."
+    },
+    "breathing": {
+      "practice": "lengthened_exhale",
+      "title_ru": "Удлинённый выдох 1:2",
+      "minutes": 8,
+      "best_time": "Утро после горячей воды или за 20 минут до обеда.",
+      "posture": "Сидя с прямой спиной, ноги на полу или скрестив. Руки на коленях ладонями вниз. Плечи расслаблены, грудная клетка открыта.",
+      "technique": "Вдох через нос на 4 счёта. Выдох через нос на 8 счётов — плавно, без усилия в конце. Если 1:2 трудно, начать с 4:6, через 3 минуты перейти к 4:8. Ритм монотонный, без задержек между фазами. Выдох должен заканчиваться естественно, без выжимания воздуха.",
+      "tongue_position": "Кончик языка мягко касается верхнего нёба за передними зубами (набхи-мудра).",
+      "contraindication": "Не на полный желудок. Прекратить при головокружении, вернуться к обычному носовому."
+    },
+    "mudra": {
+      "mudra": "none",
+      "suggested": false,
+      "name_ru": "нет",
+      "duration_minutes": 0,
+      "reason": "Сегодня мудра не рекомендуется по типу дня.",
+      "finger_technique": "—",
+      "posture": "—",
+      "breathing_during": "—",
+      "tongue_position": "—",
+      "when_to_do": "—",
+      "caution": "—"
+    },
+    "aroma": {
+      "morning": "frankincense",
+      "morning_detail": "ладан — 1 капля на аромакамень, 3 минуты проветривание, структура утра.",
+      "daytime": "geranium",
+      "daytime_detail": "герань — 1 капля, рабочее место, баланс дня.",
+      "evening": "rose",
+      "evening_detail": "роза — 1 капля, 20 минут до сна, мягкое завершение."
+    },
+    "supplements_endoluten_today": false,
+    "signal_override_warnings": [
+      "Отёк лодыжек 4/5: обед из матрицы задержки воды, рис запрещён."
+    ],
+    "thyroid_safety_notes": [
+      "Йодосодержащие добавки, водоросли и келп не рекомендуются автоматически.",
+      "Селен остаётся только в рамках утверждённого стека (с обедом). Не является лечением.",
+      "Дыхательные практики и мудры не являются терапией щитовидной железы.",
+      "Режим: стабильное время еды, без эскалации стимуляторов, без экстремального голодания."
+    ],
+    "rule_trace": {
+      "rice": [
+        "RICE: body signal override force_rice_forbidden=True → FORBIDDEN"
+      ],
+      "breathing": [
+        "BREATH: day_type=stable_day → default practice=lengthened_exhale",
+        "BREATH: mental_overload=False, no override",
+        "BREATH: selected=lengthened_exhale, minutes=8"
+      ],
+      "mudra": [
+        "MUDRA: day_type=stable_day → none (not needed on stable/recovery)",
+        "MUDRA: final=none, suggested=False"
+      ],
+      "aroma": [
+        "AROMA: day_type=stable_day",
+        "AROMA: morning=frankincense (ладан)",
+        "AROMA: daytime=geranium (герань)",
+        "AROMA: evening=rose (роза)"
+      ],
+      "body_signals": [
+        "BODY_SIGNAL: ankles=4 eyes=0 head=0 sleep=5 energy=3 sweet=0 salty=0",
+        "BODY_SIGNAL: ankles=4 >= 3 → force_meal_matrix=C_RETENTION, force_rice_forbidden=True"
+      ]
+    }
+  },
+  {
+    "scenario": "11. Mental overload input",
+    "day_type": "stable_day",
+    "scales": {
+      "water_retention_risk": 48,
+      "release_drainage_potential": 50,
+      "nervous_system_load": 45,
+      "need_for_rhythm_precision": 50
+    },
+    "meal_matrix": "F_rice",
+    "meal": {
+      "protein": "курица 110 г",
+      "vegetables": "рис 50 г, баклажан, помидор",
+      "full_description": "Курица 110 г, рис малая порция, баклажан, помидор"
+    },
+    "rice": {
+      "allowed": true,
+      "reason": "Стабильный день, низкий риск — рис малой порцией с перцем и мятой."
+    },
+    "breathing": {
+      "practice": "bhramari",
+      "title_ru": "Бхрамари (жужжание пчелы)",
+      "minutes": 4,
+      "best_time": "Вечер 16:00–17:30 или при перегрузе головы в любое время.",
+      "posture": "Сидя с прямой спиной. Указательные пальцы мягко закрывают ушные раковины (шанмукхи-мудра): большие пальцы — на козелках ушей, указательные — на закрытых веках (без давления на глаза), средние — по бокам носа, безымянные — над верхней губой, мизинцы — под нижней губой. Если полная шанмукхи сложна, достаточно закрыть уши указательными пальцами.",
+      "technique": "Вдох через нос на 4 счёта. На выдохе — мягкое непрерывное гудение «мммм» через закрытые губы. Звук низкий, вибрация ощущается в переносице и макушке. Выдох длится 6–8 счётов. Между циклами — 1 обычный вдох-выдох. Повторить 6–8 циклов. Громкость минимальная — комфортная вибрация, не напряжение.",
+      "tongue_position": "Язык свободно лежит в полости рта, не прижат, губы мягко сомкнуты.",
+      "contraindication": "Не повышать громкость. Прекратить при дискомфорте в ушах или давлении в голове."
+    },
+    "mudra": {
+      "mudra": "none",
+      "suggested": false,
+      "name_ru": "нет",
+      "duration_minutes": 0,
+      "reason": "Сегодня мудра не рекомендуется по типу дня.",
+      "finger_technique": "—",
+      "posture": "—",
+      "breathing_during": "—",
+      "tongue_position": "—",
+      "when_to_do": "—",
+      "caution": "—"
+    },
+    "aroma": {
+      "morning": "frankincense",
+      "morning_detail": "ладан — 1 капля на аромакамень, 3 минуты проветривание, структура утра.",
+      "daytime": "geranium",
+      "daytime_detail": "герань — 1 капля, рабочее место, баланс дня.",
+      "evening": "rose",
+      "evening_detail": "роза — 1 капля, 20 минут до сна, мягкое завершение."
+    },
+    "supplements_endoluten_today": false,
+    "signal_override_warnings": [
+      "Ментальный перегруз 5/5: упрощённый обед, дыхание на снижение.",
+      "Качество сна 2/5: не усиливать физическую нагрузку сегодня."
+    ],
+    "thyroid_safety_notes": [
+      "Йодосодержащие добавки, водоросли и келп не рекомендуются автоматически.",
+      "Селен остаётся только в рамках утверждённого стека (с обедом). Не является лечением.",
+      "Дыхательные практики и мудры не являются терапией щитовидной железы.",
+      "Режим: стабильное время еды, без эскалации стимуляторов, без экстремального голодания."
+    ],
+    "rule_trace": {
+      "rice": [
+        "RICE: force_rice_forbidden=False, checking day_type=stable_day",
+        "RICE: day_type not in forbidden set, checking water_retention_risk=48",
+        "RICE: stable_day + water_retention_risk=48 < 55 → ALLOWED"
+      ],
+      "breathing": [
+        "BREATH: day_type=stable_day → default practice=lengthened_exhale",
+        "BREATH: mental_overload=True, overriding lengthened_exhale → bhramari",
+        "BREATH: selected=bhramari, minutes=4"
+      ],
+      "mudra": [
+        "MUDRA: day_type=stable_day → none (not needed on stable/recovery)",
+        "MUDRA: final=none, suggested=False"
+      ],
+      "aroma": [
+        "AROMA: day_type=stable_day",
+        "AROMA: morning=frankincense (ладан)",
+        "AROMA: daytime=geranium (герань)",
+        "AROMA: evening=rose (роза)"
+      ],
+      "body_signals": [
+        "BODY_SIGNAL: ankles=0 eyes=0 head=5 sleep=2 energy=3 sweet=0 salty=0",
+        "BODY_SIGNAL: ankles=0 < 3, no retention override",
+        "BODY_SIGNAL: head=5 >= 4 → reduce_meal_complexity=True",
+        "BODY_SIGNAL: sleep=2 <= 2 → reduce_exercise=True"
+      ]
+    }
+  },
+  {
+    "scenario": "12. Low energy no swelling -> rice allowed on stable day",
+    "day_type": "stable_day",
+    "scales": {
+      "water_retention_risk": 40,
+      "release_drainage_potential": 50,
+      "nervous_system_load": 35,
+      "need_for_rhythm_precision": 40
+    },
+    "meal_matrix": "F_rice",
+    "meal": {
+      "protein": "телятина 105 г",
+      "vegetables": "рис 50–60 г, сладкий перец",
+      "full_description": "Телятина 105 г, рис 50–60 г, сладкий перец"
+    },
+    "rice": {
+      "allowed": true,
+      "reason": "Низкая энергия при низком отёке — рис условно допустим, малая порция с перцем и мятой."
+    },
+    "breathing": {
+      "practice": "lengthened_exhale",
+      "title_ru": "Удлинённый выдох 1:2",
+      "minutes": 8,
+      "best_time": "Утро после горячей воды или за 20 минут до обеда.",
+      "posture": "Сидя с прямой спиной, ноги на полу или скрестив. Руки на коленях ладонями вниз. Плечи расслаблены, грудная клетка открыта.",
+      "technique": "Вдох через нос на 4 счёта. Выдох через нос на 8 счётов — плавно, без усилия в конце. Если 1:2 трудно, начать с 4:6, через 3 минуты перейти к 4:8. Ритм монотонный, без задержек между фазами. Выдох должен заканчиваться естественно, без выжимания воздуха.",
+      "tongue_position": "Кончик языка мягко касается верхнего нёба за передними зубами (набхи-мудра).",
+      "contraindication": "Не на полный желудок. Прекратить при головокружении, вернуться к обычному носовому."
+    },
+    "mudra": {
+      "mudra": "prana",
+      "suggested": true,
+      "name_ru": "Прана-мудра",
+      "duration_minutes": 3,
+      "reason": "Ресурс при утомлении без отёка.",
+      "finger_technique": "На обеих руках одновременно: соединить кончики мизинца и безымянного пальца с кончиком большого пальца. Давление мягкое — подушечки касаются, не сжимают. Указательный и средний пальцы выпрямлены, расслаблены, не напряжены.",
+      "posture": "Сидя с ровной спиной, стопы на полу. Руки на коленях ладонями вверх. Плечи опущены, локти свободны.",
+      "breathing_during": "Дыхание носовое, спокойное. Вдох и выдох равные, примерно 4:4. Без задержек. Не форсировать глубину.",
+      "tongue_position": "Язык свободно лежит в полости рта, не прижат к нёбу.",
+      "when_to_do": "Утро после горячей воды (до завтрака) или дневной перерыв при усталости. Не делать вечером после 17:00 — может мешать засыпанию.",
+      "caution": "Прекратить, если холодеют пальцы. Не использовать при выраженном отёке лодыжек."
+    },
+    "aroma": {
+      "morning": "frankincense",
+      "morning_detail": "ладан — 1 капля на аромакамень, 3 минуты проветривание, структура утра.",
+      "daytime": "geranium",
+      "daytime_detail": "герань — 1 капля, рабочее место, баланс дня.",
+      "evening": "rose",
+      "evening_detail": "роза — 1 капля, 20 минут до сна, мягкое завершение."
+    },
+    "supplements_endoluten_today": true,
+    "signal_override_warnings": [
+      "Энергия 1/5 при низком отёке: рис условно допустим на стабильных днях."
+    ],
+    "thyroid_safety_notes": [
+      "Йодосодержащие добавки, водоросли и келп не рекомендуются автоматически.",
+      "Селен остаётся только в рамках утверждённого стека (с обедом). Не является лечением.",
+      "Дыхательные практики и мудры не являются терапией щитовидной железы.",
+      "Режим: стабильное время еды, без эскалации стимуляторов, без экстремального голодания."
+    ],
+    "rule_trace": {
+      "rice": [
+        "RICE: force_rice_forbidden=False, checking day_type=stable_day",
+        "RICE: day_type not in forbidden set, checking water_retention_risk=40",
+        "RICE: rice_conditionally_allowed=True (low energy, low swelling) → ALLOWED conditional"
+      ],
+      "breathing": [
+        "BREATH: day_type=stable_day → default practice=lengthened_exhale",
+        "BREATH: mental_overload=False, no override",
+        "BREATH: selected=lengthened_exhale, minutes=8"
+      ],
+      "mudra": [
+        "MUDRA: low_energy_no_swelling=True → prana (energy without retention)",
+        "MUDRA: final=prana, suggested=True, duration=3min"
+      ],
+      "aroma": [
+        "AROMA: day_type=stable_day",
+        "AROMA: morning=frankincense (ладан)",
+        "AROMA: daytime=geranium (герань)",
+        "AROMA: evening=rose (роза)"
+      ],
+      "body_signals": [
+        "BODY_SIGNAL: ankles=0 eyes=0 head=0 sleep=5 energy=1 sweet=0 salty=0",
+        "BODY_SIGNAL: ankles=0 < 3, no retention override",
+        "BODY_SIGNAL: energy=1 <= 2 + low swelling → rice_conditionally_allowed=True"
+      ]
+    }
+  }
+]

@@ -1,0 +1,76 @@
+{
+  "$defs": {
+    "MudraType": {
+      "enum": [
+        "prana",
+        "apana",
+        "vayu",
+        "hakini",
+        "varuna",
+        "none"
+      ],
+      "title": "MudraType",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "mudra": {
+      "$ref": "#/$defs/MudraType"
+    },
+    "suggested": {
+      "title": "Suggested",
+      "type": "boolean"
+    },
+    "name_ru": {
+      "title": "Name Ru",
+      "type": "string"
+    },
+    "duration_minutes": {
+      "title": "Duration Minutes",
+      "type": "integer"
+    },
+    "reason": {
+      "title": "Reason",
+      "type": "string"
+    },
+    "finger_technique": {
+      "title": "Finger Technique",
+      "type": "string"
+    },
+    "posture": {
+      "title": "Posture",
+      "type": "string"
+    },
+    "breathing_during": {
+      "title": "Breathing During",
+      "type": "string"
+    },
+    "tongue_position": {
+      "title": "Tongue Position",
+      "type": "string"
+    },
+    "when_to_do": {
+      "title": "When To Do",
+      "type": "string"
+    },
+    "caution": {
+      "title": "Caution",
+      "type": "string"
+    }
+  },
+  "required": [
+    "mudra",
+    "suggested",
+    "name_ru",
+    "duration_minutes",
+    "reason",
+    "finger_technique",
+    "posture",
+    "breathing_during",
+    "tongue_position",
+    "when_to_do",
+    "caution"
+  ],
+  "title": "MudraBlock",
+  "type": "object"
+}

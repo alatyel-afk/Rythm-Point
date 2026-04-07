@@ -1,0 +1,13 @@
+# MVP API + Swiss Ephemeris
+fastapi>=0.110.0
+uvicorn[standard]>=0.27.0
+pydantic>=2.6.0
+pydantic-settings>=2.2.0
+pyswisseph>=2.10.3
+tzdata>=2024.1
+
+# PostgreSQL + ORM + jobs — подключить при развёртывании БД (версии под ваш Python/PyPI)
+# sqlalchemy>=2.0.0
+# asyncpg>=0.29.0
+# psycopg2-binary>=2.9.0
+# apscheduler>=3.10.0

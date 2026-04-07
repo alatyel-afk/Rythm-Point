@@ -1,0 +1,70 @@
+{
+  "$defs": {
+    "DayType": {
+      "enum": [
+        "stable_day",
+        "drainage_day",
+        "caution_day",
+        "high_sensitivity_day",
+        "ekadashi_day",
+        "pradosh_day",
+        "recovery_day_after_reduction",
+        "pre_full_moon_retention_day",
+        "pre_new_moon_precision_day"
+      ],
+      "title": "DayType",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "date": {
+      "format": "date",
+      "title": "Date",
+      "type": "string"
+    },
+    "lunar_day_number": {
+      "title": "Lunar Day Number",
+      "type": "integer"
+    },
+    "nakshatra": {
+      "title": "Nakshatra",
+      "type": "string"
+    },
+    "ekadashi_flag": {
+      "title": "Ekadashi Flag",
+      "type": "boolean"
+    },
+    "pradosh_flag": {
+      "title": "Pradosh Flag",
+      "type": "boolean"
+    },
+    "day_type": {
+      "$ref": "#/$defs/DayType"
+    },
+    "water_retention_risk": {
+      "title": "Water Retention Risk",
+      "type": "integer"
+    },
+    "release_drainage_potential": {
+      "title": "Release Drainage Potential",
+      "type": "integer"
+    },
+    "matrix_index": {
+      "title": "Matrix Index",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "date",
+    "lunar_day_number",
+    "nakshatra",
+    "ekadashi_flag",
+    "pradosh_flag",
+    "day_type",
+    "water_retention_risk",
+    "release_drainage_potential",
+    "matrix_index"
+  ],
+  "title": "CalendarDaySummary",
+  "type": "object"
+}

@@ -1,0 +1,50 @@
+{
+  "$defs": {
+    "AromaSlot": {
+      "enum": [
+        "frankincense",
+        "rose",
+        "geranium",
+        "rosemary",
+        "leuzea",
+        "anti_stress_blend",
+        "none"
+      ],
+      "title": "AromaSlot",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "morning": {
+      "$ref": "#/$defs/AromaSlot"
+    },
+    "morning_detail": {
+      "title": "Morning Detail",
+      "type": "string"
+    },
+    "daytime": {
+      "$ref": "#/$defs/AromaSlot"
+    },
+    "daytime_detail": {
+      "title": "Daytime Detail",
+      "type": "string"
+    },
+    "evening": {
+      "$ref": "#/$defs/AromaSlot"
+    },
+    "evening_detail": {
+      "title": "Evening Detail",
+      "type": "string"
+    }
+  },
+  "required": [
+    "morning",
+    "morning_detail",
+    "daytime",
+    "daytime_detail",
+    "evening",
+    "evening_detail"
+  ],
+  "title": "AromaProtocol",
+  "type": "object"
+}
