@@ -116,7 +116,7 @@ function TodayPageContent() {
   const s = proto.scales;
   const n = proto.nutrition;
   const l = n.lunch;
-  const hasSignalOverrides = proto.rule_trace.body_signal_rules.some(
+  const hasSignalOverrides = (proto.rule_trace?.body_signal_rules ?? []).some(
     (r) => !r.includes("не записано") && !r.includes("в норме")
   );
 
@@ -383,7 +383,7 @@ function TodayPageContent() {
       {/* ═══════════════════════════════════════════════
           5. TECHNICAL / SAFETY AREA (collapsed)
           ═══════════════════════════════════════════════ */}
-      {proto.rule_trace && <RuleTraceBlock trace={proto.rule_trace} />}
+      {proto.rule_trace ? <RuleTraceBlock trace={proto.rule_trace} /> : null}
     </div>
   );
 }
