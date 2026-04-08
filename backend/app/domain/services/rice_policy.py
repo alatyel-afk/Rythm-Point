@@ -49,11 +49,17 @@ def decide_rice(
 
     if signal_override.rice_conditionally_allowed:
         trace.append("Мало сил при низком отёке — малая порция крупы допустима")
-        return RiceDecision(allowed=True, reason="Низкая энергия при низком отёке — рис условно допустим, малая порция с перцем и мятой."), trace
+        return RiceDecision(
+            allowed=True,
+            reason="Низкая энергия при низком отёке — рис условно допустим, малая порция с молотым чёрным перцем и сушёной мятой в крупе.",
+        ), trace
 
     if day_type == DayType.stable_day and scales.water_retention_risk < 55:
         trace.append("Ровный день и низкий риск задержки — крупа в малой порции разрешена")
-        return RiceDecision(allowed=True, reason="Стабильный день, низкий риск — рис малой порцией с перцем и мятой."), trace
+        return RiceDecision(
+            allowed=True,
+            reason="Стабильный день, низкий риск — рис малой порцией со специями в зёрнах (молотый чёрный перец, сушёная мята).",
+        ), trace
 
     trace.append("Условия для крупы не выполнены — обед без гарнира с крупой")
     return RiceDecision(allowed=False, reason="По умолчанию рис не включён."), trace

@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { forwardToBackend } from "@/lib/backend-proxy";
 import { buildProtocol } from "@/lib/mock-engine";
 import { getBodySignal } from "@/lib/store";
 
-export function GET(req: NextRequest) {
+export async function GET(req: NextRequest) {
+  const proxied = await forwardToBackend(req);
+  if (proxied) return proxied;
+
   const on = req.nextUrl.searchParams.get("on");
   const dateStr = on ?? new Date().toISOString().slice(0, 10);
   try {

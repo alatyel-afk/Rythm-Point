@@ -1,15 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
+import { forwardToBackend } from "@/lib/backend-proxy";
 import { upsertBodySignal, listBodySignals } from "@/lib/store";
 import type { BodySignal } from "@/lib/api";
 
-export function POST(req: NextRequest) {
-  return req.json().then((body: BodySignal) => {
-    const saved = upsertBodySignal(body);
-    return NextResponse.json(saved);
-  });
+export async function POST(req: NextRequest) {
+  const raw = await req.text();
+  const proxied = await forwardToBackend(req, raw);
+  if (proxied) return proxied;
+  const body = JSON.parse(raw) as BodySignal;
+  const saved = upsertBodySignal(body);
+  return NextResponse.json(saved);
 }
 
-export function GET(req: NextRequest) {
+export async function GET(req: NextRequest) {
+  const proxied = await forwardToBackend(req);
+  if (proxied) return proxied;
+
   const p = req.nextUrl.searchParams;
   const from = p.get("from_date");
   const to = p.get("to_date");

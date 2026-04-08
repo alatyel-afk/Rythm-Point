@@ -9,6 +9,8 @@ import { NATAL } from "../core/profile/natal-profile";
 import { NAKSHATRAS, NAK_SPAN, nakIndex, nakName, nakPada } from "../core/astrology/nakshatra";
 import { elongation, tithi, illumination, phaseLabel, matrixIndex } from "../core/astrology/lunar-day";
 import { computeSnap } from "../core/astrology/engine";
+import { navamsaLongitude } from "../core/astrology/navamsa";
+import { evaluateD1D9Alignment } from "../core/astrology/astro-alignment";
 import { angleDist, findHits } from "../core/astrology/transit-modifiers";
 import { computeScales, resolveDayType, clamp, ASPECT_RU, PLANET_RU } from "../core/protocol/rules";
 import { MEALS, DAY_MATRIX, GRAIN_FORBIDDEN, pickMeal, decideRice, lunchTime } from "../core/protocol/meal-matrix";
@@ -16,7 +18,7 @@ import { BREATH_MAP } from "../core/protocol/breathing-rules";
 import { selectMudra } from "../core/protocol/mudra-rules";
 import { AROMAS } from "../core/protocol/aroma-rules";
 import { THYROID_NOTES } from "../core/protocol/thyroid-safety";
-import { LOAD_MAP, EFFECTS } from "../core/protocol/daily-protocol-builder";
+import { EFFECTS } from "../core/protocol/daily-protocol-builder";
 import { BREAKFAST, WEEKDAYS, ENDOLUTEN_ANCHOR, buildSupplements } from "../core/profile/fixed-rules";
 import { interpretSignals } from "../core/tracking/signal-interpreter";
 import { buildProtocol } from "../core/protocol/daily-protocol-builder";
@@ -46,11 +48,12 @@ function buildTracking(dt: string, scales: { need_for_rhythm_precision: number }
 /** @internal — exported only for unit testing */
 export const _testing = {
   NATAL, NAKSHATRAS, NAK_SPAN, MEALS, DAY_MATRIX, GRAIN_FORBIDDEN,
-  BREATH_MAP, AROMAS, LOAD_MAP, EFFECTS, THYROID_NOTES, BREAKFAST,
+  BREATH_MAP, AROMAS, EFFECTS, THYROID_NOTES, BREAKFAST,
   ENDOLUTEN_ANCHOR, WEEKDAYS, ASPECT_RU, PLANET_RU,
   elongation, tithi, illumination, phaseLabel, matrixIndex,
   nakIndex, nakName, nakPada,
   computeSnap, findHits, angleDist,
+  navamsaLongitude, evaluateD1D9Alignment,
   computeScales, clamp,
   resolveDayType,
   decideRice, pickMeal, lunchTime,

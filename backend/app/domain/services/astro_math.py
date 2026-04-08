@@ -100,3 +100,24 @@ def classify_aspect(
     if abs(d - 120.0) <= orb_major:
         return "trine"
     return None
+
+
+def navamsa_longitude(sidereal_lon: float) -> float:
+    """Долгота в навамше (D9), 0..360° — как в фронтенд-модуле navamsa.ts."""
+    lon = ((sidereal_lon % 360.0) + 360.0) % 360.0
+    rashi = int(lon // 30.0) % 12
+    pos = lon % 30.0
+    nav_piece = 30.0 / 9.0
+    nav_idx = min(int(pos // nav_piece), 8)
+    movable = {0, 3, 6, 9}
+    fixed = {1, 4, 7, 10}
+    if rashi in movable:
+        start = rashi
+    elif rashi in fixed:
+        start = (rashi + 8) % 12
+    else:
+        start = (rashi + 4) % 12
+    nav_sign = (start + nav_idx) % 12
+    pos_in_nav = pos % nav_piece
+    deg_in_nav = (pos_in_nav / nav_piece) * 30.0
+    return nav_sign * 30.0 + deg_in_nav

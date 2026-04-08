@@ -29,6 +29,7 @@ from app.domain.models.protocol import (
     NutritionBlock,
     RuleTrace,
 )
+from app.domain.services.astro_alignment_rules import evaluate_d1_d9_alignment
 from app.domain.services.aroma_selector import select_aroma
 from app.domain.services.astro_math import tithi_to_matrix_index
 from app.domain.services.astro_models import TransitHit, TransitSnapshot
@@ -46,7 +47,7 @@ _BREAKFAST = (
     "Утром горячая вода. "
     "Завтрак: 1 яйцо с жидким желтком, 1 банан или 2 финика, 5 черри, 25–30 г листового салата. "
     "По желанию к салату — 30–40 г адыгейского сыра. "
-    "После еды кофе с кардамоном, гвоздикой, перцем, мускатным орехом и корицей."
+    "После еды кофе с кардамоном, гвоздикой, молотым чёрным перцем (специя), мускатным орехом и корицей — не путать с овощным сладким перцем в обеде."
 )
 
 
@@ -301,6 +302,35 @@ class RecommendationEngine:
         mx = tithi_to_matrix_index(snap.tithi)
 
         scales, scales_trace = _compute_scales(snap, analysis.hits, prev_reduction, snap.tithi)
+        scales_trace.pop()
+
+        astro_alignment, align_deltas = evaluate_d1_d9_alignment(natal, snap)
+        scales = DailyScales(
+            water_retention_risk=_clamp(scales.water_retention_risk + int(round(align_deltas.wr))),
+            release_drainage_potential=_clamp(scales.release_drainage_potential + int(round(align_deltas.rel))),
+            nervous_system_load=_clamp(scales.nervous_system_load + int(round(align_deltas.nrv))),
+            need_for_rhythm_precision=_clamp(scales.need_for_rhythm_precision + int(round(align_deltas.rhy))),
+        )
+        if any((align_deltas.wr, align_deltas.rel, align_deltas.nrv, align_deltas.rhy)):
+            scales_trace.append(
+                "Сверка D1/D9 (Луна, Солнце, натал vs транзит): Δ задержка "
+                f"{align_deltas.wr:.0f}, Δ выведение {align_deltas.rel:.0f}, "
+                f"Δ нервы {align_deltas.nrv:.0f}, Δ режим {align_deltas.rhy:.0f}"
+            )
+        scales_trace.append(
+            "Натал vs транзит: Луна D1 "
+            f"{astro_alignment.natal_moon.d1_nak} / D9 {astro_alignment.natal_moon.d9_nak} → "
+            f"транзит D1 {astro_alignment.transit_moon.d1_nak} / D9 {astro_alignment.transit_moon.d9_nak}; "
+            "Солнце D1 "
+            f"{astro_alignment.natal_sun.d1_nak} / D9 {astro_alignment.natal_sun.d9_nak} → "
+            f"транзит D1 {astro_alignment.transit_sun.d1_nak} / D9 {astro_alignment.transit_sun.d9_nak}"
+        )
+        scales_trace.append(
+            "Итого после сверки D1/D9: задержка "
+            f"{scales.water_retention_risk}, выведение {scales.release_drainage_potential}, "
+            f"нервная нагрузка {scales.nervous_system_load}, режим {scales.need_for_rhythm_precision}"
+        )
+
         day_type, dt_trace = _resolve_day_type(scales, snap, prev_reduction)
 
         sig_ov = interpret_signals(body_signals)
@@ -365,6 +395,12 @@ class RecommendationEngine:
         warnings = _build_warnings(day_type, scales, sig_ov)
         tracking = _build_tracking(day_type, scales, sig_ov)
 
+        alignment_rules = [
+            astro_alignment.summary,
+            *astro_alignment.checks,
+            "Рекомендации по набору продуктов (обед) строятся после этой сверки и применённых к шкалам поправок.",
+        ]
+
         rule_trace = RuleTrace(
             day_type_rules=dt_trace,
             scales_modifiers=scales_trace,
@@ -376,6 +412,7 @@ class RecommendationEngine:
             meal_matrix_rules=mm_trace,
             load_rules=load_trace,
             aroma_rules=aroma_trace,
+            alignment_rules=alignment_rules,
         )
 
         debug_info: dict[str, Any] | None = None
@@ -420,6 +457,7 @@ class RecommendationEngine:
             scales=scales,
             moon_illumination_pct=round(snap.moon_illumination * 100, 1),
             matrix_index=mx,
+            astro_alignment=astro_alignment,
             rule_trace=rule_trace,
             debug=debug_info,
         )

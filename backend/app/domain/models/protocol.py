@@ -97,6 +97,28 @@ class ThyroidSafetyNotes(BaseModel):
     notes: list[str]
 
 
+class AlignmentScaleDeltas(BaseModel):
+    wr: float
+    rel: float
+    nrv: float
+    rhy: float
+
+
+class LunarSolarNakPair(BaseModel):
+    d1_nak: str
+    d9_nak: str
+
+
+class AstroAlignment(BaseModel):
+    summary: str
+    checks: list[str]
+    scale_deltas: AlignmentScaleDeltas
+    natal_moon: LunarSolarNakPair
+    transit_moon: LunarSolarNakPair
+    natal_sun: LunarSolarNakPair
+    transit_sun: LunarSolarNakPair
+
+
 class RuleTrace(BaseModel):
     day_type_rules: list[str]
     scales_modifiers: list[str]
@@ -108,6 +130,7 @@ class RuleTrace(BaseModel):
     meal_matrix_rules: list[str]
     load_rules: list[str]
     aroma_rules: list[str]
+    alignment_rules: list[str]
 
 
 class DailyProtocol(BaseModel):
@@ -132,6 +155,7 @@ class DailyProtocol(BaseModel):
     scales: DailyScales
     moon_illumination_pct: float
     matrix_index: int
+    astro_alignment: AstroAlignment
     rule_trace: RuleTrace
     debug: dict[str, Any] | None = None
 

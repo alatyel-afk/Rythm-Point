@@ -1,10 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { PRODUCT_COMBINATION_MANDATE, PROTOCOL_SCOPE_NOTICE } from "@/core/profile/fixed-rules";
+import {
+  NAVAMSA_D9_NOTICE,
+  SPECIAL_LAGNAS,
+  formatSpecialLagnaRow,
+} from "@/core/profile/natal-divisions";
 
 function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`bg-surface-card rounded-2xl border border-border p-6 shadow-card ${className}`}>
+    <div
+      className={`rounded-2xl border border-gold/25 bg-gradient-to-br from-surface-card via-gold-soft/80 to-sage-soft/35 p-6 shadow-card ring-1 ring-sage/15 ${className}`}
+    >
       {children}
     </div>
   );
@@ -19,9 +27,20 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-semibold tracking-tight text-ink">
+      <h1 className="font-display text-2xl sm:text-3xl font-semibold tracking-tight bg-gradient-to-r from-burgundy via-accent-dark to-sage bg-clip-text text-transparent">
         Настройки и натальный профиль
       </h1>
+
+      <Card>
+        <SectionLabel>Правило подбора продуктов</SectionLabel>
+        <p className="text-sm text-ink leading-relaxed mb-3">{PRODUCT_COMBINATION_MANDATE}</p>
+        <p className="text-xs text-ink-secondary leading-relaxed border-t border-border pt-3">{PROTOCOL_SCOPE_NOTICE}</p>
+        <ul className="text-xs text-ink-tertiary mt-3 space-y-1 list-disc pl-4">
+          <li>Каноничный список белков и овощей и исключения — блок «Фиксированные правила» ниже на этой странице; приложение опирается на них при расчёте.</li>
+          <li>Транзитная накшатра, титхи, фаза Луны, тип дня и матрица обеда считаются на «Сегодня» автоматически; коррекция по телу — через «Самочувствие».</li>
+          <li>Справочно для сверки: D1, навамша (D9) и специальные лагны — ниже на этой странице.</li>
+        </ul>
+      </Card>
 
       <Card>
         <SectionLabel>Натальная карта (D1)</SectionLabel>
@@ -41,6 +60,20 @@ export default function SettingsPage() {
             <div key={label} className="flex gap-2">
               <span className="text-ink-tertiary w-24 shrink-0">{label}</span>
               <span className="text-ink">{value}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <Card>
+        <SectionLabel>Навамша (D9) и специальные лагны</SectionLabel>
+        <p className="text-xs text-ink-secondary leading-relaxed mb-4">{NAVAMSA_D9_NOTICE}</p>
+        <p className="text-sm font-medium text-ink mb-2">Special Lagnas</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
+          {SPECIAL_LAGNAS.map((row) => (
+            <div key={row.id} className="flex gap-2">
+              <span className="text-ink-tertiary w-28 shrink-0">{row.label}</span>
+              <span className="text-ink">{formatSpecialLagnaRow(row)}</span>
             </div>
           ))}
         </div>
@@ -77,9 +110,15 @@ export default function SettingsPage() {
         <SectionLabel>Нутрицевтики</SectionLabel>
         <ul className="text-sm space-y-2 leading-relaxed">
           {[
+            [
+              "За 30 минут до завтрака (натощак)",
+              "ALA (альфа-липоевая кислота) — нутрицевтик; строго до завтрака, отдельно от еды",
+            ],
             ["После завтрака", "L-теанин, женолутен"],
-            ["С обедом", "Омега-3, пиколинат хрома, берберин, витамин D + K2, селен"],
-            ["Днём отдельно", "Цинк"],
+            [
+              "С обедом",
+              "Омега-3, пиколинат хрома, берберин, витамин D + K2; цинк и селен — одна капсула, только с обедом",
+            ],
             ["Вечером", "Магний бисглицинат, ГАМК 500 мг, 5-HTP 120 мг"],
             ["Эндолутен", "1 раз в 3 дня, первая половина дня"],
           ].map(([time, items]) => (

@@ -2,43 +2,74 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+  Премиальная палитра: тёплые основы, насыщенные акценты, без «мутой» серости.
+  Золото + бордо + глубокий шоколад/петроль — согласованные пары, читаемый контраст.
+*/
 :root {
-  --bg-main: #dce8f4;
-  --bg-main-2: #d4e1ee;
-  --bg-card: #fdfeff;
-  --bg-card-soft: #f4f8fc;
+  /* Фон страницы — тёплый песок / слоновая кость, не холодный серый */
+  --bg-main: #f0e8df;
+  --bg-main-2: #e5d9cc;
+  --bg-card: #fdfbf8;
+  --bg-card-soft: #faf6f0;
 
-  --text-main: #182331;
-  --text-strong: #0f1b28;
-  --text-soft: #55687c;
-  --text-muted: #7a8898;
+  /* Текст — тёплый уголь, не чистый #000 */
+  --text-main: #1c1714;
+  --text-strong: #120e0c;
+  --text-soft: #5c4f47;
+  --text-muted: #7d6e63;
 
-  --border: #c7d5e3;
-  --border-strong: #b6c7d8;
+  --border: rgba(28, 23, 20, 0.1);
+  --border-strong: rgba(28, 23, 20, 0.16);
 
-  --accent-main: #4c6f91;
-  --accent-dark: #35546f;
-  --accent-soft: #dce8f4;
+  /* Золото — чёткий металлический акцент */
+  --line-gold: #c9a227;
+  --line-gold-deep: #9a7b2c;
+  --border-gold: rgba(201, 162, 39, 0.55);
 
-  --accent-secondary: #6d87a3;
-  --accent-secondary-soft: #e8f0f8;
+  /* Основной акцент UI — насыщенное бордо (кнопки, ссылки) */
+  --accent-main: #6b2d3a;
+  --accent-dark: #4a1f28;
+  --accent-soft: #f3e8ea;
 
-  --accent-info: #5f7f9c;
-  --accent-info-soft: #e7eef6;
+  /* Второй акцент — глубокий петроль */
+  --accent-secondary: #2a4a52;
+  --accent-secondary-soft: #e4eef0;
 
-  --accent-danger: #8c6077;
-  --accent-danger-soft: #f2e7ed;
+  /* Инфо — сочный сине-зелёный */
+  --accent-info: #0f6b6b;
+  --accent-info-soft: #dff4f4;
 
-  --accent-neutral: #70859a;
-  --accent-neutral-soft: #e9eff5;
+  --accent-burgundy: #6b2d3a;
+  --accent-burgundy-soft: #f3e8ea;
+  --accent-burgundy-rgb: 107 45 58;
 
-  --shadow-soft: 0 12px 28px rgba(24, 35, 49, 0.08);
+  /* Шалфей — для «успеха» / спокойных меток */
+  --accent-sage: #355045;
+  --accent-sage-soft: #e8f0ec;
+  --accent-sage-rgb: 53 80 69;
 
-  /* Каналы RGB для модификаторов прозрачности Tailwind (bg-accent/30 и т.д.) */
-  --accent-main-rgb: 76 111 145;
-  --accent-danger-rgb: 140 96 119;
+  /* Золотые токены для рамок и мелких акцентов */
+  --accent-gold: #9a7b2c;
+  --accent-gold-bright: #d4af37;
+  --accent-gold-soft: #f7f0e0;
+  --accent-gold-rgb: 154 123 44;
 
-  /* Совместимость со старыми именами в произвольном CSS */
+  --accent-danger: #8b2d3d;
+  --accent-danger-soft: #fceaea;
+
+  --accent-neutral: #4a4540;
+  --accent-neutral-soft: #ebe8e4;
+
+  --shadow-soft: 0 1px 3px rgba(28, 23, 20, 0.06);
+  --shadow-premium: 0 1px 0 rgba(255, 255, 255, 0.75) inset, 0 2px 8px rgba(28, 23, 20, 0.06),
+    0 12px 36px rgba(60, 40, 30, 0.08);
+  --shadow-premium-lg: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 4px 12px rgba(28, 23, 20, 0.07),
+    0 28px 64px rgba(50, 35, 28, 0.12);
+
+  --accent-main-rgb: 107 45 58;
+  --accent-danger-rgb: 139 45 61;
+
   --bg: var(--bg-main);
   --surface: var(--bg-card-soft);
   --surface-2: var(--bg-card);
@@ -47,25 +78,67 @@
   --accent-2: var(--accent-secondary);
 }
 
+@layer utilities {
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #e8d48b 0%, var(--line-gold) 45%, var(--line-gold-deep) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .premium-card {
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-premium);
+  }
+
+  /* Герой: глубокий тёплый градиент + золотая кромка */
+  .premium-hero {
+    background: linear-gradient(
+      155deg,
+      #1a1210 0%,
+      #2a181c 38%,
+      #1c2228 100%
+    );
+    border-bottom: 2px solid var(--line-gold);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  .hairline-top-gold {
+    border-top: 1px solid rgba(201, 162, 39, 0.45);
+  }
+
+  .heading-display {
+    font-family: var(--font-display), Georgia, serif;
+    letter-spacing: -0.03em;
+    font-weight: 600;
+    color: var(--text-strong);
+  }
+}
+
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  background: var(--bg-main);
   color: var(--text-main);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   font-size: 16px;
   line-height: 1.65;
+  background-color: var(--bg-main);
+  background-image: linear-gradient(180deg, #f5efe8 0%, #efe6db 42%, #e8ddd2 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
 }
 
 .card {
   background: var(--bg-card);
   border-radius: 1rem;
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border);
   padding: 1.5rem;
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--shadow-premium);
 }
 
 .badge {
@@ -75,7 +148,7 @@ body {
   padding: 0.2rem 0.75rem;
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
 }
 
 .scale-bar {
@@ -88,7 +161,7 @@ body {
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.14em;
   color: var(--text-muted);
   margin-bottom: 1rem;
 }

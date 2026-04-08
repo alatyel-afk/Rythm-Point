@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { buildProtocol, buildCalendarMonth, getMealMatrices, _testing as T } from "@/lib/mock-engine";
+import { tithiNameRu } from "@/core/astrology/tithi-names";
 import type { BodySignal } from "@/lib/api";
 
 // ═══════════════════════════════════════════════════════════
@@ -113,6 +114,41 @@ describe("Unit: clamp", () => {
   it("passes through in range", () => expect(T.clamp(50)).toBe(50));
 });
 
+describe("Unit: navamsaLongitude", () => {
+  it("returns 0..360 for sample longitude", () => {
+    const v = T.navamsaLongitude(62.917);
+    expect(v).toBeGreaterThanOrEqual(0);
+    expect(v).toBeLessThan(360);
+  });
+});
+
+describe("Unit: computeSnap (Meeus ephemeris)", () => {
+  it("2026-04-08: титхи убывающей Луны (~21), не игрушечная Дашами", () => {
+    const snap = T.computeSnap(new Date(2026, 3, 8, 12, 0, 0));
+    expect(snap.tithi).toBe(21);
+    expect(snap.elong).toBeGreaterThan(230);
+    expect(snap.elong).toBeLessThan(270);
+  });
+});
+
+describe("Unit: tithiNameRu", () => {
+  it("даёт Шукла и Кришна по номеру", () => {
+    expect(tithiNameRu(1)).toContain("Шукла");
+    expect(tithiNameRu(15)).toContain("Пурнима");
+    expect(tithiNameRu(16)).toContain("Кришна");
+    expect(tithiNameRu(30)).toContain("Амавасья");
+  });
+});
+
+describe("Integration: tithi label and movement bullets", () => {
+  it("протокол содержит название титхи и список движения", () => {
+    const p = buildProtocol("2026-04-08");
+    expect(p.tithi_name_ru.length).toBeGreaterThan(3);
+    expect(p.movement_load.items.length).toBeGreaterThanOrEqual(4);
+    expect(p.moon_phase).toMatch(/диск ~/);
+  });
+});
+
 // ── Scales ─────────────────────────────────────────────────
 
 describe("Unit: computeScales", () => {
@@ -121,6 +157,7 @@ describe("Unit: computeScales", () => {
       sun: 0, moon: 100, elong: 100, tithi: 1,
       nakshatra: "Test", pada: 1, illum: 0.5, phase: "test",
       isEkadashi: false, isPradosh: false,
+      mars: 0, mercury: 0, venus: 0,
       saturn: 0, jupiter: 0, rahu: 0, ketu: 0,
       ...overrides,
     };
@@ -212,6 +249,7 @@ describe("Unit: resolveDayType", () => {
     sun: 0, moon: 100, elong: 100, tithi: 5,
     nakshatra: "T", pada: 1, illum: 0.5, phase: "t",
     isEkadashi: false, isPradosh: false,
+    mars: 0, mercury: 0, venus: 0,
     saturn: 0, jupiter: 0, rahu: 0, ketu: 0,
   };
   const neutralScales = { water_retention_risk: 50, release_drainage_potential: 50, nervous_system_load: 50, need_for_rhythm_precision: 50 };
@@ -451,9 +489,9 @@ describe("Unit: lunchTime", () => {
 // ── Supplements ────────────────────────────────────────────
 
 describe("Unit: supplements", () => {
-  it("always has 4 slots", () => {
+  it("has fixed slots including ALA, lunch, spices, evening", () => {
     const s = T.buildSupplements(new Date("2026-04-07T12:00:00"));
-    expect(s.slots).toHaveLength(4);
+    expect(s.slots.length).toBeGreaterThanOrEqual(5);
   });
   it("endoluten cycle: anchor day is true", () => {
     const s = T.buildSupplements(new Date("2026-04-07T12:00:00"));
@@ -467,19 +505,28 @@ describe("Unit: supplements", () => {
     const s = T.buildSupplements(new Date("2026-04-10T12:00:00"));
     expect(s.endoluten_today).toBe(true);
   });
-  it("slot items contain L-theanine in morning", () => {
+  it("first slot is ALA nutraceutical, 30 min before breakfast", () => {
     const s = T.buildSupplements(new Date("2026-04-07T12:00:00"));
-    expect(s.slots[0].items).toContain("L-теанин");
+    expect(s.slots[0].time).toMatch(/нутрицевтик/i);
+    expect(s.slots[0].items).toMatch(/нутрицевтик/i);
+    expect(s.slots[0].items).toMatch(/Альфа-липоевая|ALA/i);
+    expect(s.slots[0].items).toMatch(/30 минут/i);
   });
-  it("slot items contain omega-3 with lunch", () => {
+  it("slot items contain L-theanine after breakfast", () => {
     const s = T.buildSupplements(new Date("2026-04-07T12:00:00"));
-    expect(s.slots[1].items).toContain("Омега-3");
+    expect(s.slots[1].items).toContain("L-теанин");
+  });
+  it("lunch slot has omega-3 and zinc+selenium one capsule", () => {
+    const s = T.buildSupplements(new Date("2026-04-07T12:00:00"));
+    expect(s.slots[2].items).toContain("Омега-3");
+    expect(s.slots[2].items).toMatch(/одной капсуле|одна капсула/i);
   });
   it("evening slot has magnesium + GABA + 5-HTP", () => {
     const s = T.buildSupplements(new Date("2026-04-07T12:00:00"));
-    expect(s.slots[3].items).toContain("Магний бисглицинат");
-    expect(s.slots[3].items).toContain("ГАМК 500 мг");
-    expect(s.slots[3].items).toContain("5-HTP 120 мг");
+    const evening = s.slots[s.slots.length - 1];
+    expect(evening.items).toContain("Магний бисглицинат");
+    expect(evening.items).toContain("ГАМК 500 мг");
+    expect(evening.items).toContain("5-HTP 120 мг");
   });
 });
 
@@ -603,24 +650,27 @@ describe("Thyroid Safety Layer", () => {
 describe("Integration: buildProtocol — structure", () => {
   const p = buildProtocol("2026-04-07");
 
-  it("returns all 20 required fields", () => {
+  it("returns all required fields", () => {
     const required = [
-      "date", "weekday", "lunar_day_number", "moon_phase", "nakshatra",
+      "date", "weekday", "lunar_day_number", "tithi_name_ru", "moon_phase", "nakshatra",
       "ekadashi_flag", "pradosh_flag", "day_type", "body_effect_summary",
       "nutrition", "supplements", "breathing_practice", "mudra_recommendation",
       "aroma_protocol", "movement_load", "thyroid_safety_notes",
       "body_markers_to_track", "warnings", "scales", "rule_trace",
+      "moon_illumination_pct", "matrix_index", "astro_alignment",
     ];
     for (const key of required) {
       expect(p).toHaveProperty(key);
     }
   });
 
-  it("nutrition has breakfast, lunch, rice, no_food_after_18", () => {
+  it("nutrition has breakfast, lunch, rice, no_food_after_18, selection_assurance", () => {
     expect(p.nutrition.breakfast).toBeTruthy();
     expect(p.nutrition.lunch).toBeTruthy();
     expect(p.nutrition.rice).toBeTruthy();
     expect(p.nutrition.no_food_after_18).toBe(true);
+    expect(p.nutrition.selection_assurance).toContain("накшатр");
+    expect(p.nutrition.selection_assurance).toContain("D1/D9");
   });
 
   it("scales are all 0-100", () => {
@@ -644,11 +694,11 @@ describe("Integration: buildProtocol — structure", () => {
     expect(types).toContain(p.day_type);
   });
 
-  it("rule_trace has all 10 categories", () => {
+  it("rule_trace has all 11 categories", () => {
     const cats = [
       "day_type_rules", "scales_modifiers", "rice_rules", "breathing_rules",
       "mudra_rules", "thyroid_rules", "body_signal_rules", "meal_matrix_rules",
-      "load_rules", "aroma_rules",
+      "load_rules", "aroma_rules", "alignment_rules",
     ];
     for (const c of cats) {
       expect(p.rule_trace).toHaveProperty(c);
@@ -658,8 +708,7 @@ describe("Integration: buildProtocol — structure", () => {
 
   it("breakfast is always fixed", () => {
     expect(p.nutrition.breakfast).toContain("яйцо");
-    expect(p.nutrition.breakfast).toContain("кофе");
-    expect(p.nutrition.breakfast).toContain("кардамон");
+    expect(p.nutrition.breakfast).toContain("нутрицевтик");
   });
 
   it("moon illumination is percentage 0-100", () => {

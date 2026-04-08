@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import { forwardToBackend } from "@/lib/backend-proxy";
 import { listBodySignals, getNutritionLog } from "@/lib/store";
 import { buildProtocol } from "@/lib/mock-engine";
 import type { BodySignalWithContext } from "@/lib/api";
 
-export function GET(req: NextRequest) {
+export async function GET(req: NextRequest) {
+  const proxied = await forwardToBackend(req);
+  if (proxied) return proxied;
+
   const p = req.nextUrl.searchParams;
   const from = p.get("from_date");
   const to = p.get("to_date");

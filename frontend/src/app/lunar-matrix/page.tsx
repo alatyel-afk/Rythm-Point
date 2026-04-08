@@ -28,10 +28,10 @@ export default function LunarMatrixPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold tracking-tight text-ink">
+        <h1 className="font-display text-2xl sm:text-3xl font-semibold tracking-tight bg-gradient-to-r from-burgundy via-accent-dark to-sage bg-clip-text text-transparent">
           Наборы обедов
         </h1>
-        <p className="text-sm text-ink-secondary mt-1.5 leading-relaxed">
+        <p className="text-sm text-sage mt-1.5 leading-relaxed font-medium">
           Шесть наборов обедов. Какой набор вы получите — зависит от типа дня, лунного дня и самочувствия.
         </p>
       </div>
@@ -42,13 +42,13 @@ export default function LunarMatrixPage() {
           return (
             <div
               key={key}
-              className="bg-surface-card rounded-2xl border border-border shadow-card overflow-hidden"
+              className="rounded-2xl border border-gold/30 bg-gradient-to-r from-surface-card via-gold-soft/90 to-sage-soft/45 shadow-card overflow-hidden ring-1 ring-sage/20"
             >
               <button
                 onClick={() => setExpanded(isOpen ? null : key)}
-                className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-surface-hover transition-colors"
+                className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-gold/10 transition-colors"
               >
-                <span className="text-sm font-medium text-ink">
+                <span className="text-sm font-semibold text-accent-dark">
                   {mealMatrixLabel(key)}
                 </span>
                 <span className="text-xs text-ink-tertiary tabular-nums">

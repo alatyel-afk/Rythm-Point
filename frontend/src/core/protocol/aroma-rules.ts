@@ -4,6 +4,84 @@ export interface AromaOut {
   morning: string; morning_detail: string;
   daytime: string; daytime_detail: string;
   evening: string; evening_detail: string;
+  /** Пояснение ротации восьми масел по дате */
+  rotation_note?: string;
+}
+
+/** Восемь позиций для ротации по дате (домашняя коллекция эфирных масел). */
+export const ROTATING_OIL_KEYS = [
+  "frankincense",
+  "geranium",
+  "rose",
+  "rosemary",
+  "leuzea",
+  "vetiver",
+  "lavender",
+  "bergamot",
+] as const;
+
+const RU_NAME: Record<(typeof ROTATING_OIL_KEYS)[number], string> = {
+  frankincense: "Ладан",
+  geranium: "Герань",
+  rose: "Роза",
+  rosemary: "Розмарин",
+  leuzea: "Левзея",
+  vetiver: "Ветивер",
+  lavender: "Лаванда",
+  bergamot: "Бергамот",
+};
+
+function seedFromDate(dateStr: string): number {
+  let h = 0;
+  for (let i = 0; i < dateStr.length; i++) h = (h * 31 + dateStr.charCodeAt(i)) >>> 0;
+  return h;
+}
+
+/** Заменить первое слово до запятой (название масла) в строке рекомендации. */
+function replaceLeadingOilRu(detail: string, oilRu: string): string {
+  const t = detail.trim();
+  if (/^Смесь/i.test(t)) return detail;
+  return detail.replace(/^[^,]+/, oilRu);
+}
+
+/**
+ * Базовые шаблоны по типу дня + ротация из 8 масел по календарной дате.
+ * Слоты «Смесь „Антистресс“» не меняются (уже готовая композиция).
+ */
+export function buildRotatingAroma(dayType: DayType, dateStr: string, forceCalm: boolean): AromaOut {
+  if (forceCalm) {
+    const s = seedFromDate(dateStr + "calm");
+    const calm = ["Роза", "Лаванда", "Герань", "Ветивер"] as const;
+    const a = calm[s % 4];
+    const c = calm[(s + 2) % 4];
+    return {
+      morning: "rose",
+      morning_detail: `${a}, 1 капля. Голова перегружена — никаких тонизирующих ароматов.`,
+      daytime: "anti_stress_blend",
+      daytime_detail: "Смесь «Антистресс», 15–20 мин через аромалампу. Перегруз головы.",
+      evening: "rose",
+      evening_detail: `${c}, 1 капля. Вечером без стимуляции.`,
+      rotation_note: `Ротация успокаивающих масел (4): утро «${a}», вечер «${c}»; днём — готовая смесь «Антистресс».`,
+    };
+  }
+
+  const base = AROMAS[dayType];
+  const s = seedFromDate(dateStr);
+  const pick = (slot: number) => ROTATING_OIL_KEYS[(s + slot * 3) % ROTATING_OIL_KEYS.length];
+  const ru = (slot: number) => RU_NAME[pick(slot)];
+  const a = ru(0);
+  const b = ru(1);
+  const c = ru(2);
+
+  return {
+    morning: base.morning,
+    morning_detail: replaceLeadingOilRu(base.morning_detail, a),
+    daytime: base.daytime,
+    daytime_detail: replaceLeadingOilRu(base.daytime_detail, b),
+    evening: base.evening,
+    evening_detail: replaceLeadingOilRu(base.evening_detail, c),
+    rotation_note: `Ротация коллекции (8 масел: ладан, герань, роза, розмарин, левзея, ветивер, лаванда, бергамот): сегодня акценты — утро «${a}», день «${b}», вечер «${c}».`,
+  };
 }
 
 export const AROMAS: Record<DayType, AromaOut> = {

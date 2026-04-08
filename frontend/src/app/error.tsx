@@ -1,20 +1,30 @@
 "use client";
 
-export default function Error({
+import { useEffect } from "react";
+
+export default function AppError({
   error,
   reset,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  useEffect(() => {
+    console.error("[app error]", error);
+  }, [error]);
+
   return (
-    <div className="mx-auto max-w-content px-6 py-16 text-center">
-      <h1 className="text-xl font-bold text-ink mb-2">Не удалось отобразить страницу</h1>
-      <p className="text-ink-secondary text-sm mb-6 break-words max-w-lg mx-auto">{error.message}</p>
+    <div className="mx-auto max-w-content px-6 py-16 text-center space-y-4">
+      <h1 className="font-display text-xl font-semibold text-ink-strong">
+        Не удалось показать страницу
+      </h1>
+      <p className="text-sm text-ink-secondary max-w-md mx-auto">
+        {error.message || "Неизвестная ошибка. Если недавно менялся код — остановите dev-сервер, удалите папку «.next» в каталоге frontend и запустите снова."}
+      </p>
       <button
         type="button"
         onClick={() => reset()}
-        className="rounded-lg bg-accent-dark px-4 py-2 text-sm font-semibold text-white hover:opacity-95"
+        className="rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-white hover:bg-accent-dark"
       >
         Попробовать снова
       </button>

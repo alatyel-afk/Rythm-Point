@@ -1,32 +1,24 @@
 import type { DailyProtocol, CalendarDay, BodySignal } from "../../lib/api";
-import { computeSnap } from "../astrology/engine";
+import { computeSnap, type Snap } from "../astrology/engine";
+import { evaluateD1D9Alignment } from "../astrology/astro-alignment";
 import { findHits } from "../astrology/transit-modifiers";
-import { matrixIndex } from "../astrology/lunar-day";
+import { matrixIndex, moonPhaseLineRu } from "../astrology/lunar-day";
+import { tithiNameRu } from "../astrology/tithi-names";
 import { computeScales, resolveDayType, clamp } from "./rules";
 import type { Scales, DayType } from "./rules";
+import { NATAL } from "../profile/natal-profile";
 import { MEALS, DAY_MATRIX, pickMeal, decideRice, lunchTime } from "./meal-matrix";
 import { BREATH_MAP } from "./breathing-rules";
 import { selectMudra } from "./mudra-rules";
-import { AROMAS } from "./aroma-rules";
+import { buildRotatingAroma } from "./aroma-rules";
+import { buildMovementGuidance } from "./movement-guidance";
 import { THYROID_NOTES } from "./thyroid-safety";
 import { BREAKFAST, WEEKDAYS, buildSupplements } from "../profile/fixed-rules";
 import { interpretSignals } from "../tracking/signal-interpreter";
 import { mealMatrixLabel } from "@/lib/meal-matrix-labels";
 
-const LOAD_MAP: Record<DayType, { profile: string; detail: string }> = {
-  stable_day: { profile: "moderate", detail: "25 минут умеренно + 25 минут ходьбы." },
-  drainage_day: { profile: "lymph_stretch", detail: "Сухая щётка 5 мин + ноги вверх 12 мин + растяжка 10 мин." },
-  caution_day: { profile: "no_overload", detail: "Только мягкое движение и прогулка 35 мин, без силовых." },
-  high_sensitivity_day: { profile: "no_overload", detail: "Прогулка 35 мин + мягкая мобилизация грудного отдела." },
-  ekadashi_day: { profile: "lymph_stretch", detail: "Прогулка 30 мин + растяжка 20 мин, мягко." },
-  pradosh_day: { profile: "no_overload", detail: "Ходьба 30 мин + мягкая мобилизация стоп." },
-  recovery_day_after_reduction: { profile: "walk_soft", detail: "45 мин ходьбы ровным темпом." },
-  pre_full_moon_retention_day: { profile: "no_overload", detail: "Только прогулка 35 мин, без силовых и прыжков." },
-  pre_new_moon_precision_day: { profile: "walk_soft", detail: "50 мин ходьбы суммарно, без ускорений." },
-};
-
 const EFFECTS: Record<DayType, string> = {
-  stable_day: "Сегодня тело легче держит форму, если не утяжелять обед.",
+  stable_day: "Тип дня без особых ограничений по протоколу — ориентир на шкалы ниже и обед по выбранной матрице.",
   drainage_day: "Хороший день для выведения лишней воды. Обед ранний и лёгкий, больше движения, без обезвоживания.",
   caution_day: "Одновременно высокий риск отёков и перегруз нервной системы. Обед лёгкий, без гарнира, нагрузку снизить.",
   high_sensitivity_day: "Нервная система перегружена. Обед проще, порции меньше, дыхание на успокоение.",
@@ -36,6 +28,35 @@ const EFFECTS: Record<DayType, string> = {
   pre_full_moon_retention_day: "Канун полнолуния — тело копит воду. Без гарнира, без соусов, без жареного. Обед лёгкий.",
   pre_new_moon_precision_day: "Канун новолуния — важно не сбить режим. Обед ровный и предсказуемый, время еды без сдвигов.",
 };
+
+const DAY_TYPE_LABEL_RU: Record<DayType, string> = {
+  stable_day: "устойчивый день",
+  drainage_day: "день дренажа",
+  caution_day: "день осторожности",
+  high_sensitivity_day: "чувствительный день",
+  ekadashi_day: "экадаши",
+  pradosh_day: "прадош",
+  recovery_day_after_reduction: "день восстановления",
+  pre_full_moon_retention_day: "канун полнолуния",
+  pre_new_moon_precision_day: "канун новолуния",
+};
+
+/** Текст для пользователя: протокол уже учёл накшатру, титхи, фазу, D1/D9 и тип дня. */
+function buildSelectionAssurance(
+  snap: Snap,
+  tithiName: string,
+  dayType: DayType,
+  astroSummary: string
+): string {
+  const dtRu = DAY_TYPE_LABEL_RU[dayType];
+  const illumPct = Math.round(snap.illum * 1000) / 10;
+  return (
+    `Состав обеда подобран автоматически из текущих данных: транзит Луны в накшатре «${snap.nakshatra}», титхи ${snap.tithi} (${tithiName}), фаза — «${snap.phase}» (~${illumPct}% освещённости диска). ` +
+    `Тип дня — «${dtRu}»; матрица тарелки и крупа рассчитаны после сверки натального профиля с транзитом (D1/D9) и поправок по шкалам — приложение не подбирает ингредиенты произвольно и не ротирует их вне этих правил. ` +
+    `${astroSummary} ` +
+    `Если меняется самочувствие — отметьте его на странице «Самочувствие», чтобы пересчитать протокол; допустимые продукты и исключения заданы в «Настройках» и встроены в фиксированные правила расчёта.`
+  );
+}
 
 function buildWarnings(dt: DayType, scales: Scales): string[] {
   const w: string[] = [];
@@ -60,7 +81,7 @@ function buildTracking(dt: DayType, scales: Scales): string[] {
 }
 
 export function buildProtocol(dateStr: string, bodySignals?: BodySignal | null): DailyProtocol {
-  const d = new Date(dateStr + "T12:00:00");
+  const d = new Date(`${dateStr}T12:00:00`);
   const doy = Math.floor((d.getTime() - new Date(d.getFullYear(), 0, 0).getTime()) / 86400000);
 
   const snap = computeSnap(d);
@@ -71,17 +92,38 @@ export function buildProtocol(dateStr: string, bodySignals?: BodySignal | null):
   const prevReduction = prevSnap.isEkadashi || prevSnap.isPradosh;
 
   const { scales: baseScales, trace: scalesTrace } = computeScales(snap, hits, prevReduction);
+  scalesTrace.pop();
+
+  const astro = evaluateD1D9Alignment(NATAL, snap);
+  const scalesAfterAstro: Scales = {
+    water_retention_risk: clamp(baseScales.water_retention_risk + astro.deltas.wr),
+    release_drainage_potential: clamp(baseScales.release_drainage_potential + astro.deltas.rel),
+    nervous_system_load: clamp(baseScales.nervous_system_load + astro.deltas.nrv),
+    need_for_rhythm_precision: clamp(baseScales.need_for_rhythm_precision + astro.deltas.rhy),
+  };
+  if (astro.deltas.wr || astro.deltas.rel || astro.deltas.nrv || astro.deltas.rhy) {
+    scalesTrace.push(
+      `Сверка D1/D9 (Луна, Солнце, натал vs транзит): Δ задержка ${astro.deltas.wr}, Δ выведение ${astro.deltas.rel}, Δ нервы ${astro.deltas.nrv}, Δ режим ${astro.deltas.rhy}`
+    );
+  }
+  scalesTrace.push(
+    `Натал vs транзит: Луна D1 ${astro.natal_moon.d1_nak} / D9 ${astro.natal_moon.d9_nak} → транзит D1 ${astro.transit_moon.d1_nak} / D9 ${astro.transit_moon.d9_nak}; Солнце D1 ${astro.natal_sun.d1_nak} / D9 ${astro.natal_sun.d9_nak} → транзит D1 ${astro.transit_sun.d1_nak} / D9 ${astro.transit_sun.d9_nak}`
+  );
+  scalesTrace.push(
+    `Итого после сверки D1/D9: задержка ${scalesAfterAstro.water_retention_risk}, выведение ${scalesAfterAstro.release_drainage_potential}, нервная нагрузка ${scalesAfterAstro.nervous_system_load}, режим ${scalesAfterAstro.need_for_rhythm_precision}`
+  );
 
   const ov = bodySignals ? interpretSignals(bodySignals) : null;
-  const scales: Scales = ov ? {
-    water_retention_risk: clamp(baseScales.water_retention_risk + ov.scaleDeltas.wr),
-    release_drainage_potential: clamp(baseScales.release_drainage_potential + ov.scaleDeltas.rel),
-    nervous_system_load: clamp(baseScales.nervous_system_load + ov.scaleDeltas.nrv),
-    need_for_rhythm_precision: clamp(baseScales.need_for_rhythm_precision + ov.scaleDeltas.rhy),
-  } : baseScales;
+  const scales: Scales = ov
+    ? {
+        water_retention_risk: clamp(scalesAfterAstro.water_retention_risk + ov.scaleDeltas.wr),
+        release_drainage_potential: clamp(scalesAfterAstro.release_drainage_potential + ov.scaleDeltas.rel),
+        nervous_system_load: clamp(scalesAfterAstro.nervous_system_load + ov.scaleDeltas.nrv),
+        need_for_rhythm_precision: clamp(scalesAfterAstro.need_for_rhythm_precision + ov.scaleDeltas.rhy),
+      }
+    : scalesAfterAstro;
 
   if (ov) {
-    scalesTrace.pop();
     scalesTrace.push(`Самочувствие сдвинуло шкалы: задержка +${ov.scaleDeltas.wr}, выведение +${ov.scaleDeltas.rel}, нервы +${ov.scaleDeltas.nrv}, режим +${ov.scaleDeltas.rhy}`);
     scalesTrace.push(`Итого: задержка ${scales.water_retention_risk}, выведение ${scales.release_drainage_potential}, нервная нагрузка ${scales.nervous_system_load}, режим ${scales.need_for_rhythm_precision}`);
   }
@@ -150,28 +192,36 @@ export function buildProtocol(dateStr: string, bodySignals?: BodySignal | null):
     }
   }
 
-  let load = LOAD_MAP[dayType];
-  const loadTrace = [`По типу дня назначена нагрузка: ${load.detail}`];
-  if (ov?.noIntensifyExercise && load.profile === "moderate") {
-    load = { profile: "walk_soft", detail: "Плохой сон — нагрузка снижена. Только ходьба 35 мин ровным темпом, без ускорений." };
-    loadTrace.push("Плохой сон — умеренная нагрузка снижена до мягкой ходьбы");
+  const mg = buildMovementGuidance(dayType, snap.tithi, snap.elong, {
+    noIntensifyExercise: ov?.noIntensifyExercise ?? false,
+  });
+  let load = { profile: mg.profile, detail: mg.detail, items: mg.items };
+  if (ov?.noIntensifyExercise && dayType === "stable_day" && mg.profile === "moderate") {
+    load = {
+      profile: "walk_soft",
+      detail: mg.detail,
+      items: [
+        "Плохой сон — объём движения снижен: без умеренной нагрузки, только мягкая ходьба и короткая виброплатформа.",
+        ...mg.items,
+      ],
+    };
   }
-  if (ov?.noIntensifyExercise && load.profile === "lymph_stretch") {
-    load = { ...load, detail: load.detail + " Без интенсивных элементов — плохой сон." };
-    loadTrace.push("Плохой сон — интенсивные элементы убраны из растяжки");
+  const loadTrace = [
+    `Движение по типу дня, титхи ${snap.tithi} и фазе Луны (без спортивного тона).`,
+    ...load.items.map((line) => `→ ${line}`),
+  ];
+  if (ov?.noIntensifyExercise) {
+    loadTrace.push("Плохой сон — нагрузка дополнительно смягчена в блоке рекомендаций.");
   }
 
-  let aroma = AROMAS[dayType];
-  const aromaTrace = [`По типу дня выбраны ароматы`];
+  let aroma = buildRotatingAroma(dayType, dateStr, false);
+  const aromaTrace = [`По типу дня и ротации 8 масел (${dateStr})`];
   if (ov?.forceCalmBreathing) {
-    aroma = {
-      morning: "rose", morning_detail: "Роза, 1 капля. Голова перегружена — никаких тонизирующих ароматов.",
-      daytime: "anti_stress_blend", daytime_detail: "Смесь «Антистресс», 15–20 мин через аромалампу. Перегруз головы.",
-      evening: "rose", evening_detail: "Роза, 1 капля. Вечером без стимуляции.",
-    };
+    aroma = buildRotatingAroma(dayType, dateStr, true);
     aromaTrace.push("Голова перегружена — ароматы переключены на успокаивающие");
   }
   aromaTrace.push(`Утро: ${aroma.morning_detail}`, `День: ${aroma.daytime_detail}`, `Вечер: ${aroma.evening_detail}`);
+  if (aroma.rotation_note) aromaTrace.push(aroma.rotation_note);
 
   const warnings = buildWarnings(dayType, scales);
   if (ov?.forceRetentionMatrix) warnings.push("Лодыжки отекли — обед переведён на лёгкий вариант, без гарнира.");
@@ -187,11 +237,18 @@ export function buildProtocol(dateStr: string, bodySignals?: BodySignal | null):
   const lt = lunchTime(dayType);
   const thyroidTrace = [`Щитовидная железа: консервативный режим, ${THYROID_NOTES.length} ограничений`];
 
+  const alignmentRules = [
+    astro.summary,
+    ...astro.checks,
+    "Рекомендации по набору продуктов (обед) строятся после этой сверки и применённых к шкалам поправок.",
+  ];
+
   return {
     date: dateStr,
     weekday: WEEKDAYS[d.getDay()],
     lunar_day_number: snap.tithi,
-    moon_phase: snap.phase,
+    tithi_name_ru: tithiNameRu(snap.tithi),
+    moon_phase: moonPhaseLineRu(snap.elong, snap.illum),
     nakshatra: snap.nakshatra,
     ekadashi_flag: snap.isEkadashi,
     pradosh_flag: snap.isPradosh,
@@ -199,6 +256,12 @@ export function buildProtocol(dateStr: string, bodySignals?: BodySignal | null):
     body_effect_summary: EFFECTS[dayType],
     nutrition: {
       breakfast: BREAKFAST,
+      selection_assurance: buildSelectionAssurance(
+        snap,
+        tithiNameRu(snap.tithi),
+        dayType,
+        astro.summary
+      ),
       lunch: {
         matrix_used: finalMatrix,
         protein: meal.protein,
@@ -225,6 +288,15 @@ export function buildProtocol(dateStr: string, bodySignals?: BodySignal | null):
     scales,
     moon_illumination_pct: Math.round(snap.illum * 1000) / 10,
     matrix_index: matrixIndex(snap.tithi),
+    astro_alignment: {
+      summary: astro.summary,
+      checks: astro.checks,
+      scale_deltas: astro.deltas,
+      natal_moon: astro.natal_moon,
+      transit_moon: astro.transit_moon,
+      natal_sun: astro.natal_sun,
+      transit_sun: astro.transit_sun,
+    },
     rule_trace: {
       day_type_rules: dtTrace,
       scales_modifiers: scalesTrace,
@@ -236,6 +308,7 @@ export function buildProtocol(dateStr: string, bodySignals?: BodySignal | null):
       meal_matrix_rules: mmTrace,
       load_rules: loadTrace,
       aroma_rules: aromaTrace,
+      alignment_rules: alignmentRules,
     },
   };
 }
@@ -272,4 +345,4 @@ export function getMealMatrices(): Record<string, { protein: string; vegetables:
   return { ...MEALS };
 }
 
-export { LOAD_MAP, EFFECTS };
+export { EFFECTS };

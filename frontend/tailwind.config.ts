@@ -1,14 +1,12 @@
 import type { Config } from "tailwindcss";
 
-/**
- * Цвета из :root (globals.css). Не дублируем hex — только var() и rgb(.../<alpha-value>) для opacity.
- */
 const config: Config = {
   content: ["./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "Georgia", "Times New Roman", "serif"],
       },
       colors: {
         surface: {
@@ -16,7 +14,7 @@ const config: Config = {
           DEFAULT: "var(--bg-main-2)",
           card: "var(--bg-card)",
           "card-soft": "var(--bg-card-soft)",
-          hover: "var(--accent-secondary-soft)",
+          hover: "var(--accent-gold-soft)",
           active: "var(--accent-secondary-soft)",
           subtle: "var(--bg-card-soft)",
         },
@@ -32,6 +30,19 @@ const config: Config = {
           light: "var(--accent-soft)",
           dark: "var(--accent-dark)",
           muted: "var(--accent-secondary)",
+        },
+        burgundy: {
+          DEFAULT: "rgb(var(--accent-burgundy-rgb) / <alpha-value>)",
+          soft: "var(--accent-burgundy-soft)",
+        },
+        sage: {
+          DEFAULT: "rgb(var(--accent-sage-rgb) / <alpha-value>)",
+          soft: "var(--accent-sage-soft)",
+        },
+        gold: {
+          DEFAULT: "rgb(var(--accent-gold-rgb) / <alpha-value>)",
+          soft: "var(--accent-gold-soft)",
+          bright: "var(--accent-gold-bright)",
         },
         "accent-secondary": {
           DEFAULT: "var(--accent-secondary)",
@@ -56,12 +67,13 @@ const config: Config = {
           "info-light": "var(--accent-info-soft)",
           warning: "var(--accent-neutral)",
           "warning-light": "var(--accent-neutral-soft)",
-          success: "var(--accent-info)",
-          "success-light": "var(--accent-info-soft)",
+          success: "var(--accent-sage)",
+          "success-light": "var(--accent-sage-soft)",
         },
         border: {
           DEFAULT: "var(--border)",
           strong: "var(--border-strong)",
+          light: "rgba(18, 24, 32, 0.07)",
         },
         brand: {
           50: "var(--bg-card-soft)",
@@ -78,24 +90,27 @@ const config: Config = {
       },
       borderRadius: {
         "2xl": "1rem",
-        "3xl": "1.25rem",
+        "3xl": "1.35rem",
       },
       boxShadow: {
         card: "var(--shadow-soft)",
-        "card-elevated": "0 16px 36px rgba(24, 35, 49, 0.10)",
-        "card-hover": "0 20px 44px rgba(24, 35, 49, 0.12)",
+        premium: "var(--shadow-premium)",
+        "premium-lg": "var(--shadow-premium-lg)",
+        "card-elevated": "var(--shadow-premium)",
+        "card-hover": "0 24px 48px rgba(18, 24, 32, 0.14)",
         metric: "var(--shadow-soft)",
-        nav: "0 2px 12px rgba(24, 35, 49, 0.06)",
+        nav: "0 4px 24px rgba(18, 24, 32, 0.08)",
+        glow: "0 0 48px rgba(201, 162, 39, 0.22)",
       },
       maxWidth: {
         content: "73.75rem",
       },
       fontSize: {
-        hero: ["2.5rem", { lineHeight: "1.15", fontWeight: "700" }],
-        "hero-mobile": ["2rem", { lineHeight: "1.2", fontWeight: "700" }],
-        section: ["1.5rem", { lineHeight: "1.3", fontWeight: "650" }],
-        "section-mobile": ["1.25rem", { lineHeight: "1.3", fontWeight: "650" }],
-        "card-title": ["1.125rem", { lineHeight: "1.4", fontWeight: "650" }],
+        hero: ["2.75rem", { lineHeight: "1.12", fontWeight: "600" }],
+        "hero-mobile": ["2.125rem", { lineHeight: "1.18", fontWeight: "600" }],
+        section: ["1.5rem", { lineHeight: "1.3", fontWeight: "600" }],
+        "section-mobile": ["1.3rem", { lineHeight: "1.32", fontWeight: "600" }],
+        "card-title": ["1.125rem", { lineHeight: "1.45", fontWeight: "600" }],
       },
     },
   },

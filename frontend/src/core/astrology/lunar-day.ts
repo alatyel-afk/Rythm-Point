@@ -21,6 +21,12 @@ export function phaseLabel(elong: number): string {
   return "убывающая Луна";
 }
 
+/** Одна строка для карточки: фаза + доля освещённости диска (0–100%). */
+export function moonPhaseLineRu(elong: number, illumination01: number): string {
+  const pct = Math.round(illumination01 * 1000) / 10;
+  return `${phaseLabel(elong)} · диск ~${pct}%`;
+}
+
 export function matrixIndex(t: number): number {
   return t >= 30 ? 29 : Math.max(1, t);
 }

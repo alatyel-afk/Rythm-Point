@@ -49,7 +49,7 @@ export default function CalendarPage() {
         >
           ←
         </button>
-        <h1 className="text-xl font-semibold tracking-tight text-ink">
+        <h1 className="font-display text-2xl sm:text-3xl font-semibold tracking-tight bg-gradient-to-r from-burgundy via-accent-dark to-sage bg-clip-text text-transparent">
           {MONTHS[month - 1]} {year}
         </h1>
         <button

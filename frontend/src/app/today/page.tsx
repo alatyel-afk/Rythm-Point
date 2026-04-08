@@ -64,13 +64,13 @@ function MetricCard({ title, value, max, barColor, borderColor, note }: {
 }) {
   const pct = Math.round((value / max) * 100);
   return (
-    <div className={`bg-surface-card rounded-2xl border border-border-strong border-l-[3px] ${borderColor} p-4 pt-3.5 shadow-metric flex flex-col gap-1.5 min-w-0`}>
+    <div className={`premium-card rounded-2xl border-l-[3px] ${borderColor} p-4 pt-3.5 flex flex-col gap-1.5 min-w-0`}>
       <span className="text-[11px] font-bold text-ink-tertiary uppercase tracking-widest">{title}</span>
       <div className="flex items-end gap-1.5">
         <span className="text-[32px] font-extrabold tabular-nums leading-none text-ink">{value}</span>
         <span className="text-sm text-ink-faint mb-1">/ {max}</span>
       </div>
-      <div className="h-[5px] rounded-full bg-border overflow-hidden mt-1">
+      <div className="h-1.5 rounded-full bg-[rgba(28,23,20,0.1)] overflow-hidden mt-1">
         <div className={`h-full rounded-full transition-all duration-500 ${barColor}`} style={{ width: `${pct}%` }} />
       </div>
       <span className="text-xs text-ink-secondary leading-snug mt-0.5">{note}</span>
@@ -128,9 +128,11 @@ function TodayPageContent() {
           ═══════════════════════════════════════════════ */}
       <section>
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-5">
-          <h1 className="text-hero-mobile lg:text-hero text-ink">
-            Протокол дня
-          </h1>
+          <div>
+            <h1 className="font-display text-hero-mobile lg:text-hero text-ink-strong tracking-[-0.03em]">
+              Протокол дня
+            </h1>
+          </div>
           <div className="flex items-center gap-3">
             <input
               type="date"
@@ -153,36 +155,34 @@ function TodayPageContent() {
           </div>
         </div>
 
-        <div className="rounded-2xl shadow-card-elevated overflow-hidden">
-          {/* Dark header zone */}
-          <div className="bg-accent-dark px-6 pt-5 pb-4">
+        <div className="rounded-2xl overflow-hidden border border-gold/25 shadow-[var(--shadow-premium-lg)]">
+          <div className="premium-hero px-6 pt-6 pb-5">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
               <div>
-                <p className="text-section-mobile lg:text-section text-white">
+                <p className="text-section-mobile lg:text-section text-white tracking-[-0.02em]">
                   {fmt(proto.date)}, {proto.weekday}
                 </p>
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-2.5 text-[14px]">
-                  <span className="font-semibold text-white">Титхи {proto.lunar_day_number}</span>
-                  <span className="text-white/30">|</span>
-                  <span className="text-white/75">{proto.nakshatra}</span>
-                  <span className="text-white/30">|</span>
-                  <span className="text-white/75">{proto.moon_phase}</span>
-                  <span className="text-white/30">|</span>
-                  <span className="text-white/50 tabular-nums">{proto.moon_illumination_pct}% Луны</span>
+                  <span className="font-medium text-gold-bright">
+                    Титхи {proto.lunar_day_number}
+                    {proto.tithi_name_ru ? ` · ${proto.tithi_name_ru}` : ""}
+                  </span>
+                  <span className="text-white/25">|</span>
+                  <span className="text-white/92">{proto.nakshatra}</span>
+                  <span className="text-white/25">|</span>
+                  <span className="text-white/80">{proto.moon_phase}</span>
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-2 sm:pt-1">
                 <DayKindBadge kind={proto.day_type} />
-                {proto.ekadashi_flag && <span className="badge bg-white/15 text-white">экадаши</span>}
-                {proto.pradosh_flag && <span className="badge bg-white/15 text-white">прадош</span>}
+                {proto.ekadashi_flag && (
+                  <span className="badge border border-white/25 bg-white/10 text-white">экадаши</span>
+                )}
+                {proto.pradosh_flag && (
+                  <span className="badge border border-white/25 bg-white/10 text-white">прадош</span>
+                )}
               </div>
             </div>
-          </div>
-          {/* Body effect summary — light zone */}
-          <div className="bg-surface-card border border-border-strong border-t-0 rounded-b-2xl px-6 py-4">
-            <p className="text-[15px] leading-[1.65] text-ink">
-              {proto.body_effect_summary}
-            </p>
           </div>
         </div>
 
@@ -200,7 +200,7 @@ function TodayPageContent() {
         )}
         {!hasSignalOverrides && (
           <Link href={`/body-signals?date=${selectedDate}`}
-            className="mt-4 block text-center rounded-xl border-2 border-dashed border-border py-3.5 text-sm font-medium text-ink-tertiary hover:border-accent hover:text-accent hover:bg-accent-light transition-all">
+            className="mt-4 block text-center rounded-xl border-2 border-dashed border-gold/35 py-3.5 text-sm font-medium text-ink-tertiary hover:border-gold hover:text-ink-secondary hover:bg-gold-soft/80 transition-all">
             + Как вы себя чувствуете сегодня?
           </Link>
         )}
@@ -233,8 +233,8 @@ function TodayPageContent() {
         <div className="space-y-5">
 
           {/* Body effect — tinted card, not white */}
-          <div className="bg-accent-light rounded-2xl border border-border-strong p-6 shadow-card">
-            <h2 className="text-card-title text-accent-dark mb-3">Что происходит с телом</h2>
+          <div className="premium-card rounded-2xl p-6">
+            <h2 className="text-card-title text-ink-strong mb-3">Что происходит с телом</h2>
             <p className="text-[15px] text-ink leading-relaxed">{proto.body_effect_summary}</p>
             <div className="mt-4 space-y-2.5">
               <ScaleBar label="Удержание воды" value={toFive(s.water_retention_risk)} />
@@ -245,12 +245,18 @@ function TodayPageContent() {
           </div>
 
           {/* NUTRITION — visually strongest card: accent left border, elevated */}
-          <div className="bg-surface-card rounded-2xl border border-border-strong border-l-4 border-l-accent p-6 shadow-card-elevated">
-            <h2 className="text-card-title text-accent mb-4">Обед сегодня</h2>
+          <div className="premium-card rounded-2xl p-6 border-l-[3px] border-l-gold shadow-[var(--shadow-premium-lg)]">
+            <h2 className="font-display text-card-title text-ink-strong mb-4">Обед сегодня</h2>
+
+            {n.selection_assurance && (
+              <p className="text-sm text-ink leading-relaxed mb-4 rounded-xl border border-gold/20 bg-surface-card-soft px-4 py-3">
+                {n.selection_assurance}
+              </p>
+            )}
 
             <p className="text-sm text-ink-tertiary leading-relaxed mb-4">{n.breakfast}</p>
 
-            <div className="rounded-xl bg-surface border border-border-strong p-4 space-y-3">
+            <div className="rounded-xl bg-surface-card-soft border border-gold/15 p-4 space-y-3">
               <div className="flex items-center justify-between gap-2">
                 <h3 className="text-[17px] font-bold text-ink">
                   Обед {l.time_window}
@@ -271,8 +277,8 @@ function TodayPageContent() {
             </div>
           </div>
 
-          <div className="bg-surface-card rounded-2xl border border-border-strong p-6 shadow-card">
-            <h2 className="text-card-title text-ink mb-3">Добавки по расписанию</h2>
+          <div className="premium-card rounded-2xl p-6">
+            <h2 className="text-card-title text-ink-strong mb-3">Нутрицевтики по расписанию</h2>
             <ul className="space-y-2.5">
               {proto.supplements.slots.map((sl, i) => (
                 <li key={i} className="text-[15px] leading-relaxed">
@@ -286,20 +292,30 @@ function TodayPageContent() {
             </p>
           </div>
 
-          <div className="bg-surface-card rounded-2xl border border-border-strong p-5 shadow-card">
-            <h2 className="text-card-title text-ink mb-2">Движение сегодня</h2>
-            <div className="flex items-center gap-3">
+          <div className="premium-card rounded-2xl p-5">
+            <h2 className="text-card-title text-ink-strong mb-2">Движение сегодня</h2>
+            <p className="text-xs text-ink-tertiary mb-3 leading-relaxed">
+              По титхи {proto.lunar_day_number}{proto.tithi_name_ru ? ` (${proto.tithi_name_ru})` : ""} и фазе Луны; без спортивного тона — если не любите нагрузки, берите нижние границы.
+            </p>
+            <div className="flex items-center gap-3 mb-3">
               <DayKindBadge kind={proto.movement_load.profile} />
-              <p className="text-[15px] text-ink">{proto.movement_load.detail}</p>
             </div>
+            <ul className="space-y-2.5">
+              {proto.movement_load.items.map((line, i) => (
+                <li key={i} className="flex items-start gap-2.5 text-[15px] text-ink leading-relaxed">
+                  <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-gold" />
+                  {line}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
         {/* ── RIGHT COLUMN ─────────────────────────────── */}
         <div className="space-y-5">
 
-          <div className="bg-surface-card rounded-2xl border border-border-strong p-5 shadow-card">
-            <h2 className="text-card-title text-ink mb-3">Дыхание</h2>
+          <div className="premium-card rounded-2xl p-5">
+            <h2 className="text-card-title text-ink-strong mb-3">Дыхание</h2>
             <div className="flex items-baseline gap-2 mb-4">
               <span className="text-[17px] font-bold text-accent">{proto.breathing_practice.title_ru}</span>
               <span className="text-sm text-ink-tertiary">{proto.breathing_practice.minutes} мин</span>
@@ -318,8 +334,8 @@ function TodayPageContent() {
           </div>
 
           {proto.mudra_recommendation.suggested && (
-            <div className="bg-surface-card rounded-2xl border border-border-strong p-5 shadow-card">
-              <h2 className="text-card-title text-ink mb-3">Мудра дня</h2>
+            <div className="premium-card rounded-2xl p-5">
+              <h2 className="text-card-title text-ink-strong mb-3">Мудра дня</h2>
               <div className="flex items-baseline gap-2 mb-1">
                 <span className="text-[17px] font-bold text-accent">{proto.mudra_recommendation.name_ru}</span>
                 <span className="text-sm text-ink-tertiary">{proto.mudra_recommendation.duration_minutes} мин</span>
@@ -340,8 +356,11 @@ function TodayPageContent() {
             </div>
           )}
 
-          <div className="bg-surface-card rounded-2xl border border-border-strong p-5 shadow-card">
-            <h2 className="text-card-title text-ink mb-3">Ароматы</h2>
+          <div className="premium-card rounded-2xl p-5">
+            <h2 className="text-card-title text-ink-strong mb-3">Ароматы</h2>
+            {proto.aroma_protocol.rotation_note && (
+              <p className="text-xs text-ink-tertiary mb-3 leading-relaxed">{proto.aroma_protocol.rotation_note}</p>
+            )}
             <div className="space-y-2.5">
               <DetailRow label="Утро">{proto.aroma_protocol.morning_detail}</DetailRow>
               <DetailRow label="День">{proto.aroma_protocol.daytime_detail}</DetailRow>
@@ -349,12 +368,12 @@ function TodayPageContent() {
             </div>
           </div>
 
-          <div className="bg-surface-card rounded-2xl border border-border-strong p-5 shadow-card">
-            <h2 className="text-card-title text-ink mb-3">Что тело покажет к вечеру</h2>
+          <div className="premium-card rounded-2xl p-5">
+            <h2 className="text-card-title text-ink-strong mb-3">Что тело покажет к вечеру</h2>
             <ul className="space-y-2">
               {proto.body_markers_to_track.map((t, i) => (
                 <li key={i} className="flex items-start gap-2.5 text-[15px] text-ink leading-relaxed">
-                  <span className="mt-[7px] h-2 w-2 shrink-0 rounded-full bg-accent/50" />
+                  <span className="mt-[7px] h-2 w-2 shrink-0 rounded-full bg-gold" />
                   {t}
                 </li>
               ))}
@@ -401,6 +420,7 @@ export default function TodayPage() {
 const TRACE_SECTIONS: { key: keyof RuleTrace; label: string }[] = [
   { key: "day_type_rules", label: "Почему такой тип дня" },
   { key: "scales_modifiers", label: "Откуда шкалы" },
+  { key: "alignment_rules", label: "Сверка D1/D9 и обед" },
   { key: "body_signal_rules", label: "Влияние самочувствия" },
   { key: "meal_matrix_rules", label: "Выбор обеда" },
   { key: "rice_rules", label: "Решение по крупе" },
@@ -417,7 +437,7 @@ function RuleTraceBlock({ trace }: { trace: RuleTrace }) {
   const toggle = (k: string) => setOpenSections((p) => ({ ...p, [k]: !p[k] }));
 
   return (
-    <section className="rounded-xl border border-border-strong bg-surface-card-soft p-4 shadow-card">
+    <section className="premium-card rounded-xl p-4 bg-surface-card-soft">
       <button onClick={() => setOpen(!open)}
         className="flex items-center gap-2 w-full text-left text-sm font-semibold text-ink-tertiary hover:text-ink-secondary transition-colors">
         <span className={`text-[10px] transition-transform duration-200 ${open ? "rotate-90" : ""}`}>▶</span>

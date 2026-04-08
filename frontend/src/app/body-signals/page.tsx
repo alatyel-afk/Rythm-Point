@@ -47,7 +47,10 @@ function BodySignalsPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const dateParam = searchParams.get("date");
-  const [tab, setTab] = useState<"input" | "history">("input");
+  const tabParam = searchParams.get("tab");
+  const [tab, setTab] = useState<"input" | "history">(() =>
+    tabParam === "history" ? "history" : "input"
+  );
   const [date, setDate] = useState(dateParam || todayStr());
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -69,6 +72,17 @@ function BodySignalsPageContent() {
   const [nutrNotes, setNutrNotes] = useState("");
   const [history, setHistory] = useState<BodySignalWithContext[]>([]);
   const [histErr, setHistErr] = useState("");
+  const [historyLoading, setHistoryLoading] = useState(false);
+
+  useEffect(() => {
+    const t = searchParams.get("tab");
+    if (t === "history") setTab("history");
+    else if (t === "input") setTab("input");
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (dateParam) setDate(dateParam);
+  }, [dateParam]);
 
   useEffect(() => {
     api.getBodySignal(date).then((res) => {
@@ -115,25 +129,61 @@ function BodySignalsPageContent() {
   useEffect(() => {
     if (tab !== "history") return;
     setHistErr("");
+    setHistoryLoading(true);
     const to = todayStr();
     const from = new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10);
-    api.getHistory(from, to).then(setHistory).catch((e) => setHistErr(e.message));
+    let cancelled = false;
+    api
+      .getHistory(from, to)
+      .then((rows) => {
+        if (!cancelled) setHistory(Array.isArray(rows) ? rows : []);
+      })
+      .catch((e) => {
+        if (!cancelled) setHistErr(e instanceof Error ? e.message : String(e));
+      })
+      .finally(() => {
+        if (!cancelled) setHistoryLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [tab]);
+
+  function setTabAndUrl(next: "input" | "history") {
+    setTab(next);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", next);
+    router.replace(`/body-signals?${params.toString()}`, { scroll: false });
+  }
+
+  function setDateAndUrl(nextDate: string) {
+    setDate(nextDate);
+    setSaved(false);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("date", nextDate);
+    if (!params.has("tab")) params.set("tab", tab);
+    router.replace(`/body-signals?${params.toString()}`, { scroll: false });
+  }
 
   return (
     <div className="space-y-6">
+      <h1 className="font-display text-2xl font-semibold tracking-tight text-ink-strong">
+        Самочувствие
+      </h1>
+
       {/* Tab switcher */}
-      <div className="flex items-center gap-1 p-1 bg-surface-hover rounded-xl w-fit">
+      <div className="flex items-center gap-1 p-1 rounded-xl w-fit bg-gold-soft/60 ring-1 ring-gold/25">
         {(["input", "history"] as const).map((t) => {
           const active = tab === t;
           return (
             <button
               key={t}
-              onClick={() => setTab(t)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              onClick={() => setTabAndUrl(t)}
+              type="button"
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 active
-                  ? "bg-surface-card text-accent shadow-card"
-                  : "text-ink-tertiary hover:text-ink-secondary"
+                  ? "bg-accent text-white shadow-sm"
+                  : "text-ink-secondary hover:bg-surface-card hover:text-ink"
               }`}
             >
               {t === "input" ? "Записать" : "История за 30 дней"}
@@ -143,14 +193,14 @@ function BodySignalsPageContent() {
       </div>
 
       {tab === "input" && (
-        <div className="space-y-6">
-          <div className="bg-surface-card rounded-2xl border border-border p-6 shadow-card">
+        <div key="tab-input" className="space-y-6">
+          <div className="premium-card rounded-2xl p-6">
             <div className="flex items-center gap-3 mb-5">
               <span className="text-sm font-medium text-ink-secondary">Дата:</span>
               <input
                 type="date"
                 value={date}
-                onChange={(e) => { setDate(e.target.value); setSaved(false); }}
+                onChange={(e) => setDateAndUrl(e.target.value)}
                 className="rounded-xl border border-border bg-surface-card px-3 py-2 text-sm text-ink shadow-card focus:outline-none focus:ring-2 focus:ring-accent/25 focus:border-accent/40"
               />
             </div>
@@ -203,7 +253,7 @@ function BodySignalsPageContent() {
             </div>
           )}
 
-          <div className="bg-surface-card rounded-2xl border border-border p-6 shadow-card">
+          <div className="premium-card rounded-2xl p-6">
             <h2 className="section-title">Что ела</h2>
             <div className="space-y-3 text-sm">
               <div className="flex items-center gap-3">
@@ -270,20 +320,24 @@ function BodySignalsPageContent() {
       )}
 
       {tab === "history" && (
-        <div className="space-y-4">
+        <div key="tab-history" className="space-y-4">
           <h2 className="text-lg font-semibold text-ink">
             Самочувствие за последние 30 дней
           </h2>
           {histErr && <p className="text-semantic-danger text-sm">{histErr}</p>}
-          {history.length === 0 && !histErr && (
+          {historyLoading && (
+            <p className="text-ink-secondary text-sm py-6">Загрузка истории…</p>
+          )}
+          {!historyLoading && history.length === 0 && !histErr && (
             <p className="text-ink-tertiary text-sm py-6 text-center">
               Записей пока нет. Заполните самочувствие на вкладке «Записать».
             </p>
           )}
-          {history.map((h, idx) => {
+          {!historyLoading &&
+            history.map((h, idx) => {
             const ov = signalSummary(h.signal);
             return (
-              <div key={idx} className="bg-surface-card rounded-2xl border border-border p-5 shadow-card space-y-3">
+              <div key={h.signal?.day_date ?? idx} className="premium-card rounded-2xl p-5 space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-semibold text-ink">{h.signal.day_date}</span>
                   <div className="flex gap-2 items-center">

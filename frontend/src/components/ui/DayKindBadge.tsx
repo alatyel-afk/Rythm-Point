@@ -1,21 +1,21 @@
 "use client";
 
-/* Cold blue-gray / steel / plum / pale blue-gray only — no green */
+/* Спокойные чипы: белая плоскость + тонкий цветной акцент слева */
 
 const styles: Record<string, string> = {
-  stable_day: "bg-accent-neutral-soft text-accent-neutral",
-  drainage_day: "bg-accent-info-soft text-accent-info",
-  caution_day: "bg-accent-danger-soft text-accent-danger",
-  high_sensitivity_day: "bg-accent-danger-soft text-accent-danger",
-  ekadashi_day: "bg-accent-secondary-soft text-accent-secondary",
-  pradosh_day: "bg-accent-secondary-soft text-accent-secondary",
-  recovery_day_after_reduction: "bg-accent-secondary-soft text-accent-secondary",
-  pre_full_moon_retention_day: "bg-accent-danger-soft text-accent-danger",
-  pre_new_moon_precision_day: "bg-accent-light text-accent-dark",
-  walk_soft: "bg-accent-neutral-soft text-accent-neutral",
-  moderate: "bg-accent-neutral-soft text-accent-neutral",
-  lymph_stretch: "bg-accent-info-soft text-accent-info",
-  no_overload: "bg-accent-danger-soft text-accent-danger",
+  stable_day: "border-l-sage",
+  drainage_day: "border-l-accent-info",
+  caution_day: "border-l-burgundy",
+  high_sensitivity_day: "border-l-accent-danger",
+  ekadashi_day: "border-l-gold",
+  pradosh_day: "border-l-gold",
+  recovery_day_after_reduction: "border-l-accent-secondary",
+  pre_full_moon_retention_day: "border-l-burgundy",
+  pre_new_moon_precision_day: "border-l-gold",
+  walk_soft: "border-l-gold",
+  moderate: "border-l-sage",
+  lymph_stretch: "border-l-accent-info",
+  no_overload: "border-l-accent-danger",
 };
 
 const labels: Record<string, string> = {
@@ -35,8 +35,11 @@ const labels: Record<string, string> = {
 };
 
 export function DayKindBadge({ kind }: { kind: string }) {
+  const edge = styles[kind] ?? "border-l-stone-500";
   return (
-    <span className={`badge ${styles[kind] ?? "bg-accent-light text-accent-muted"}`}>
+    <span
+      className={`badge border border-gold/25 bg-surface-card text-ink shadow-sm border-l-[3px] ${edge}`}
+    >
       {labels[kind] ?? kind}
     </span>
   );

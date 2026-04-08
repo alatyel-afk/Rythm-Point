@@ -1,9 +1,24 @@
 const BASE = "/api";
 
+function parseJson<T>(text: string, hint: string): T {
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    const preview = text.replace(/\s+/g, " ").slice(0, 160);
+    throw new Error(`${hint}: ответ не JSON (${preview}${text.length > 160 ? "…" : ""})`);
+  }
+}
+
 async function get<T>(path: string): Promise<T> {
   const res = await fetch(`${BASE}${path}`, { cache: "no-store" });
-  if (!res.ok) throw new Error(`API ${res.status}: ${res.statusText}`);
-  return res.json();
+  const text = await res.text();
+  if (!res.ok) {
+    const preview = text.replace(/\s+/g, " ").slice(0, 200);
+    throw new Error(
+      `API ${res.status}: ${res.statusText}${preview ? ` — ${preview}` : ""}`
+    );
+  }
+  return parseJson<T>(text, "API");
 }
 
 async function post<T>(path: string, body: unknown): Promise<T> {
@@ -12,8 +27,14 @@ async function post<T>(path: string, body: unknown): Promise<T> {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-  if (!res.ok) throw new Error(`API ${res.status}: ${res.statusText}`);
-  return res.json();
+  const text = await res.text();
+  if (!res.ok) {
+    const preview = text.replace(/\s+/g, " ").slice(0, 200);
+    throw new Error(
+      `API ${res.status}: ${res.statusText}${preview ? ` — ${preview}` : ""}`
+    );
+  }
+  return parseJson<T>(text, "API");
 }
 
 export interface RiceDecision {
@@ -39,6 +60,8 @@ export interface DailyProtocol {
   date: string;
   weekday: string;
   lunar_day_number: number;
+  /** Напр. «Кришна Шаштхи», «Шукла Пурнима» */
+  tithi_name_ru: string;
   moon_phase: string;
   nakshatra: string;
   ekadashi_flag: boolean;
@@ -47,6 +70,8 @@ export interface DailyProtocol {
   body_effect_summary: string;
   nutrition: {
     breakfast: string;
+    /** Протокол уже учёл накшатру, титхи, фазу, D1/D9 и настройки (поле выдаёт локальный движок; прокси может отсутствовать). */
+    selection_assurance?: string;
     lunch: LunchSpec;
     rice: RiceDecision;
     no_food_after_18: boolean;
@@ -86,10 +111,12 @@ export interface DailyProtocol {
     daytime_detail: string;
     evening: string;
     evening_detail: string;
+    rotation_note?: string;
   };
   movement_load: {
     profile: string;
     detail: string;
+    items: string[];
   };
   thyroid_safety_notes: {
     mode: string;
@@ -105,7 +132,18 @@ export interface DailyProtocol {
   };
   moon_illumination_pct: number;
   matrix_index: number;
+  astro_alignment: AstroAlignment;
   rule_trace: RuleTrace;
+}
+
+export interface AstroAlignment {
+  summary: string;
+  checks: string[];
+  scale_deltas: { wr: number; rel: number; nrv: number; rhy: number };
+  natal_moon: { d1_nak: string; d9_nak: string };
+  transit_moon: { d1_nak: string; d9_nak: string };
+  natal_sun: { d1_nak: string; d9_nak: string };
+  transit_sun: { d1_nak: string; d9_nak: string };
 }
 
 export interface RuleTrace {
@@ -119,6 +157,7 @@ export interface RuleTrace {
   meal_matrix_rules: string[];
   load_rules: string[];
   aroma_rules: string[];
+  alignment_rules: string[];
 }
 
 export interface CalendarDay {

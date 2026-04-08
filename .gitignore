@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Next.js
+frontend/.next/
+frontend/out/
+frontend/.turbo/
+
+# Env (keep .env.example if you add one)
+.env
+.env.local
+.env.*.local
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Logs & coverage
+*.log
+npm-debug.log*
+coverage/
+htmlcov/
+.coverage
+
+# Build / misc
+dist/
+build/
+*.tsbuildinfo
