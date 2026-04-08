@@ -62,6 +62,12 @@ export default function CalendarPage() {
 
       {err && <p className="text-semantic-danger text-sm">{err}</p>}
 
+      <p className="text-xs text-ink-secondary leading-relaxed max-w-3xl">
+        Тип дня считается так же, как на «Сегодня»: лунный день, транзиты к вашей натальной карте (D1/D9), шкалы
+        задержки/выведения/нервов/режима — девять категорий, не три. У полнолуния и новолуния узкое окно по фазе; у
+        канунов нет «половины месяца под одной меткой».
+      </p>
+
       <div className="grid grid-cols-7 gap-1 text-center">
         {WKDAYS.map((d) => (
           <div key={d} className="py-1.5 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">
@@ -78,7 +84,7 @@ export default function CalendarPage() {
             <a
               key={d.date}
               href={`/today?on=${d.date}`}
-              className="group bg-surface-card rounded-xl border border-border-strong p-2.5 shadow-card hover:shadow-card-hover hover:border-accent/40 transition-all flex flex-col gap-1 min-h-[100px]"
+              className="group bg-surface-card rounded-xl border border-border-strong p-2.5 shadow-card hover:shadow-card-hover hover:border-accent/40 transition-all flex flex-col gap-1 min-h-[128px]"
             >
               <div className="flex items-center justify-between">
                 <span className="text-sm font-semibold text-ink">{dayNum}</span>
@@ -90,6 +96,12 @@ export default function CalendarPage() {
                 {d.nakshatra}
               </span>
               <DayKindBadge kind={d.day_type} />
+
+              {d.natal_alignment_hint && (
+                <p className="text-[9px] text-ink-tertiary leading-snug line-clamp-3" title={d.natal_alignment_hint}>
+                  {d.natal_alignment_hint}
+                </p>
+              )}
 
               <div className="mt-auto flex items-center justify-between">
                 <div className="flex items-center gap-1" title="Задержка воды">

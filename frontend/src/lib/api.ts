@@ -170,6 +170,8 @@ export interface CalendarDay {
   water_retention_risk: number;
   release_drainage_potential: number;
   matrix_index: number;
+  /** Сверка натала с транзитом (D1/D9), как в протоколе «Сегодня» — кратко для ячейки календаря. */
+  natal_alignment_hint?: string;
 }
 
 export interface BodySignal {

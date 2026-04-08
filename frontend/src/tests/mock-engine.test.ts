@@ -266,13 +266,17 @@ describe("Unit: resolveDayType", () => {
     const { dayType } = T.resolveDayType(neutralScales, neutralSnap, true);
     expect(dayType).toBe("recovery_day_after_reduction");
   });
-  it("high illumination → pre_full_moon", () => {
-    const { dayType } = T.resolveDayType(neutralScales, { ...neutralSnap, illum: 0.9 }, false);
+  it("elong near full moon (узкое окно) → pre_full_moon", () => {
+    const { dayType } = T.resolveDayType(neutralScales, { ...neutralSnap, elong: 170, tithi: 15, illum: 0.9 }, false);
     expect(dayType).toBe("pre_full_moon_retention_day");
   });
-  it("low illumination → pre_new_moon", () => {
-    const { dayType } = T.resolveDayType(neutralScales, { ...neutralSnap, illum: 0.05 }, false);
+  it("elong near new moon (узкое окно) → pre_new_moon", () => {
+    const { dayType } = T.resolveDayType(neutralScales, { ...neutralSnap, elong: 10, tithi: 1, illum: 0.05 }, false);
     expect(dayType).toBe("pre_new_moon_precision_day");
+  });
+  it("high illum без узкой фазы — не подменяет тип дня", () => {
+    const { dayType } = T.resolveDayType(neutralScales, { ...neutralSnap, elong: 120, illum: 0.9 }, false);
+    expect(dayType).toBe("stable_day");
   });
   it("high wr + nrv → caution", () => {
     const { dayType } = T.resolveDayType(

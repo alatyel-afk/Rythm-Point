@@ -22,6 +22,7 @@ export function Nav() {
           <Link
             key={l.href}
             href={l.href}
+            aria-current={active ? "page" : undefined}
             className={`rounded-md px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] transition-colors ${
               active
                 ? "bg-accent text-white shadow-md"

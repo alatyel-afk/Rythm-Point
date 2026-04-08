@@ -1,0 +1,21 @@
+{
+  "name": "Протокол дня — Джйотиш · питание",
+  "short_name": "Протокол",
+  "description": "Персональный протокол: питание, лунный день, транзиты, самочувствие.",
+  "start_url": "/today",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f0e8df",
+  "theme_color": "#6b2d3a",
+  "lang": "ru",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/icons/app-icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

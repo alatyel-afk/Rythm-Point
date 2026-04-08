@@ -58,13 +58,35 @@ export function computeScales(snap: Snap, hits: Hit[], prevReduction: boolean): 
   return { scales, trace };
 }
 
+/** Узкое окно у полнолуния (элонгация Луна–Солнце): ~последние титхи перед пиком, не половина месяца. */
+export function isPreFullMoonBand(elongDeg: number): boolean {
+  const e = elongDeg % 360;
+  return e >= 156 && e <= 180;
+}
+
+/** Узкое окно у новолуния: начало/конец цикла по элонгации. */
+export function isPreNewMoonBand(elongDeg: number): boolean {
+  const e = elongDeg % 360;
+  return e <= 24 || e >= 336;
+}
+
 export function resolveDayType(scales: Scales, snap: Snap, prevReduction: boolean): { dayType: DayType; trace: string[] } {
   const trace: string[] = [];
   if (snap.isEkadashi) { trace.push("Сегодня экадаши — это определяет тип дня"); return { dayType: "ekadashi_day", trace }; }
   if (snap.isPradosh) { trace.push("Сегодня прадоша — это определяет тип дня"); return { dayType: "pradosh_day", trace }; }
   if (prevReduction) { trace.push("Вчера была экадаши или прадоша — сегодня день восстановления"); return { dayType: "recovery_day_after_reduction", trace }; }
-  if (snap.illum > 0.85) { trace.push(`Луна освещена на ${(snap.illum * 100).toFixed(0)}% — канун полнолуния, тело копит воду`); return { dayType: "pre_full_moon_retention_day", trace }; }
-  if (snap.illum < 0.15) { trace.push(`Луна освещена на ${(snap.illum * 100).toFixed(0)}% — канун новолуния, важно держать режим`); return { dayType: "pre_new_moon_precision_day", trace }; }
+  if (isPreFullMoonBand(snap.elong)) {
+    trace.push(
+      `Элонгация ${snap.elong.toFixed(0)}° (узкий канун полнолуния) — задержка жидкости, тип «канун полнолуния»`
+    );
+    return { dayType: "pre_full_moon_retention_day", trace };
+  }
+  if (isPreNewMoonBand(snap.elong)) {
+    trace.push(
+      `Элонгация ${snap.elong.toFixed(0)}° (узкий канун новолуния) — важна точность режима`
+    );
+    return { dayType: "pre_new_moon_precision_day", trace };
+  }
   if (scales.water_retention_risk >= 72 && scales.nervous_system_load >= 68) { trace.push(`Задержка воды (${scales.water_retention_risk}) и нервная нагрузка (${scales.nervous_system_load}) одновременно высокие — день повышенного внимания`); return { dayType: "caution_day", trace }; }
   if (scales.nervous_system_load >= 75 || scales.need_for_rhythm_precision >= 78) { trace.push(`Нервная нагрузка (${scales.nervous_system_load}) или важность режима (${scales.need_for_rhythm_precision}) критически высокие — нервная система под нагрузкой`); return { dayType: "high_sensitivity_day", trace }; }
   if (scales.release_drainage_potential >= 72 && scales.water_retention_risk <= 55) { trace.push(`Хороший потенциал выведения (${scales.release_drainage_potential}) при низкой задержке (${scales.water_retention_risk}) — день выведения воды`); return { dayType: "drainage_day", trace }; }

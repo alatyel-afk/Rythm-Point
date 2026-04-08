@@ -1,6 +1,6 @@
 import type { DailyProtocol, CalendarDay, BodySignal } from "../../lib/api";
 import { computeSnap, type Snap } from "../astrology/engine";
-import { evaluateD1D9Alignment } from "../astrology/astro-alignment";
+import { evaluateD1D9Alignment, type AstroAlignmentResult } from "../astrology/astro-alignment";
 import { findHits } from "../astrology/transit-modifiers";
 import { matrixIndex, moonPhaseLineRu } from "../astrology/lunar-day";
 import { tithiNameRu } from "../astrology/tithi-names";
@@ -313,6 +313,12 @@ export function buildProtocol(dateStr: string, bodySignals?: BodySignal | null):
   };
 }
 
+function calendarNatalHint(astro: AstroAlignmentResult): string {
+  const skip = "Явных совпадений Луны/Солнца";
+  const line = astro.checks.find((c) => !c.startsWith(skip)) ?? astro.summary;
+  return line.length > 160 ? `${line.slice(0, 157)}…` : line;
+}
+
 export function buildCalendarMonth(year: number, month: number): CalendarDay[] {
   const days: CalendarDay[] = [];
   const last = new Date(year, month, 0).getDate();
@@ -324,7 +330,14 @@ export function buildCalendarMonth(year: number, month: number): CalendarDay[] {
     const prevD = new Date(d.getTime() - 86400000);
     const prevSnap = computeSnap(prevD);
     const prevReduction = prevSnap.isEkadashi || prevSnap.isPradosh;
-    const { scales } = computeScales(snap, hits, prevReduction);
+    const { scales: baseScales } = computeScales(snap, hits, prevReduction);
+    const astro = evaluateD1D9Alignment(NATAL, snap);
+    const scales: Scales = {
+      water_retention_risk: clamp(baseScales.water_retention_risk + astro.deltas.wr),
+      release_drainage_potential: clamp(baseScales.release_drainage_potential + astro.deltas.rel),
+      nervous_system_load: clamp(baseScales.nervous_system_load + astro.deltas.nrv),
+      need_for_rhythm_precision: clamp(baseScales.need_for_rhythm_precision + astro.deltas.rhy),
+    };
     const { dayType } = resolveDayType(scales, snap, prevReduction);
     days.push({
       date: dateStr,
@@ -336,6 +349,7 @@ export function buildCalendarMonth(year: number, month: number): CalendarDay[] {
       water_retention_risk: scales.water_retention_risk,
       release_drainage_potential: scales.release_drainage_potential,
       matrix_index: matrixIndex(snap.tithi),
+      natal_alignment_hint: calendarNatalHint(astro),
     });
   }
   return days;
