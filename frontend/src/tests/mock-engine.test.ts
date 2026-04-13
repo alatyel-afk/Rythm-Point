@@ -1,4 +1,6 @@
 import { describe, it, expect } from "vitest";
+import { isEkadashi } from "@/core/astrology/ekadashi";
+import { isPradosh } from "@/core/astrology/pradosh";
 import { buildProtocol, buildCalendarMonth, getMealMatrices, _testing as T } from "@/lib/mock-engine";
 import { tithiNameRu } from "@/core/astrology/tithi-names";
 import { isRiktaTithi, natalBirthTithiNumber } from "@/core/astrology/rikta-tithi";
@@ -57,9 +59,24 @@ describe("Unit: tithi", () => {
     expect(T.tithi(-10)).toBeGreaterThanOrEqual(1);
     expect(T.tithi(400)).toBeLessThanOrEqual(30);
   });
-  it("ekadashi is tithi 11", () => {
-    const el = 11 * 12 - 6;
-    expect(T.tithi(el)).toBe(11);
+  it("tithi from elongation: shukla ekadashi 11, krishna ekadashi 26", () => {
+    expect(T.tithi(11 * 12 - 6)).toBe(11);
+    expect(T.tithi(25 * 12 + 6)).toBe(26);
+  });
+});
+
+describe("Unit: ekadashi and pradosh tithi flags", () => {
+  it("ekadashi: шукла 11 и кришна 26", () => {
+    expect(isEkadashi(11)).toBe(true);
+    expect(isEkadashi(26)).toBe(true);
+    expect(isEkadashi(10)).toBe(false);
+    expect(isEkadashi(25)).toBe(false);
+  });
+  it("pradosh: шукла 13 и кришна 28", () => {
+    expect(isPradosh(13)).toBe(true);
+    expect(isPradosh(28)).toBe(true);
+    expect(isPradosh(12)).toBe(false);
+    expect(isPradosh(27)).toBe(false);
   });
 });
 

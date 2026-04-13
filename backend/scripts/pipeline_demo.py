@@ -81,8 +81,8 @@ def _simulate_snapshot(d: date) -> TransitSnapshot:
         nakshatra_pada=nakshatra_pada(moon),
         moon_illumination=moon_illumination_ratio(elong),
         moon_phase_ru=moon_phase_label_ru(elong),
-        is_ekadashi=(tithi == 11),
-        is_pradosh_day=(tithi == 13),
+        is_ekadashi=(tithi in (11, 26)),
+        is_pradosh_day=(tithi in (13, 28)),
     )
 
 

@@ -1,4 +1,5 @@
 import type { SignalRule } from "./protocol-types";
+import { SIGNAL_BASELINE_SELF_ASSESSMENT_HINT_RU } from "./protocol-ui-texts";
 
 export const signalRules: SignalRule[] = [
   {
@@ -232,7 +233,6 @@ export const signalRules: SignalRule[] = [
     lunchTemplateIds: ["stable_chicken", "stable_veal"],
     breathingTemplateIds: ["sama_vritti_6"],
     loadTemplateId: "normal_walk",
-    warning:
-      "Нет полной картины самочувствия или ни одно правило не сошлось — показан базовый шаблон; при необходимости заполните «Самочувствие».",
+    warning: SIGNAL_BASELINE_SELF_ASSESSMENT_HINT_RU,
   },
 ];

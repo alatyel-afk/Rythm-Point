@@ -525,7 +525,7 @@ function SignalProtocolSection({ ui }: { ui: DailyProtocolUi }) {
           </div>
 
           <div>
-            <h4 className="text-sm font-bold text-ink mb-2">Добавки (краткий список слоя)</h4>
+            <h4 className="text-sm font-bold text-ink mb-2">Нутрицевтики (те же слоты, что ниже)</h4>
             <ul className="space-y-1.5 text-sm text-ink-secondary">
               {ui.protocol.supplements.map((line, i) => (
                 <li key={i} className="flex gap-2">

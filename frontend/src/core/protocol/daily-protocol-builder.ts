@@ -22,7 +22,8 @@ import {
 } from "../profile/fixed-rules";
 import { interpretSignals } from "../tracking/signal-interpreter";
 import { mealMatrixLabel } from "@/lib/meal-matrix-labels";
-import { buildDailyProtocolUi } from "./daily-protocol-ui";
+import type { SignalRuleId } from "./protocol-types";
+import { alignSignalProtocolUiWithCanonical, buildDailyProtocolUi } from "./daily-protocol-ui";
 import { formatCanonicalLunchForSignalUi } from "./protocol-ui-texts";
 import { mapBodySignalToBodySignals, buildDayContextFromSnap } from "./protocol-context";
 import { buildNatalDayForecast } from "../astrology/natal-day-forecast";
@@ -279,6 +280,7 @@ export function buildProtocol(dateStr: string, bodySignals?: BodySignal | null):
   const natal_forecast = buildNatalDayForecast(NATAL, snap, tithiLabel);
 
   const waterFastDay = dayType === "ekadashi_day" || dayType === "pradosh_day";
+  const supplementsBlock = waterFastDay ? buildSupplementsWaterFastDay(d) : buildSupplements(d);
 
   const signal_protocol_ui_base = buildDailyProtocolUi({
     meta: {
@@ -295,19 +297,44 @@ export function buildProtocol(dateStr: string, bodySignals?: BodySignal | null):
     hasCombinedZincSelenium: true,
   });
 
-  const signal_protocol_ui = {
-    ...signal_protocol_ui_base,
-    protocol: {
-      ...signal_protocol_ui_base.protocol,
-      lunchText: formatCanonicalLunchForSignalUi({
-        timeWindow: lt.window,
-        matrixLabel: mealMatrixLabel(finalMatrix),
-        fullDescription: meal.full_description,
-        riceAllowed: rice.allowed,
-        riceReason: rice.reason,
-      }),
+  const matchedSignalRule = signal_protocol_ui_base.technical.matchedRule as SignalRuleId;
+  const signal_protocol_ui = alignSignalProtocolUiWithCanonical(signal_protocol_ui_base, {
+    matchedRule: matchedSignalRule,
+    dayType,
+    scales,
+    breakfast: waterFastDay ? WATER_ONLY_FAST_DAY_TEXT : BREAKFAST,
+    lunchTitle: waterFastDay ? "Питание" : "Обед",
+    lunchText: formatCanonicalLunchForSignalUi({
+      timeWindow: lt.window,
+      matrixLabel: mealMatrixLabel(finalMatrix),
+      fullDescription: meal.full_description,
+      riceAllowed: rice.allowed,
+      riceReason: rice.reason,
+    }),
+    supplementSlots: supplementsBlock.slots,
+    breathing: {
+      title_ru: br.title,
+      minutes: br.min,
+      best_time: br.time,
+      posture: br.posture,
+      technique: br.technique,
+      tongue_position: br.tongue,
+      contraindication: br.contra,
     },
-  };
+    movement: { profile: load.profile, items: load.items },
+    bodyEffectSummary: EFFECTS[dayType],
+    trackingMarkers: tracking,
+    engineWarning: signal_protocol_ui_base.summary.warning,
+    meta: {
+      date: dateStr,
+      weekday: WEEKDAYS[d.getDay()],
+      lunarDayNumber: snap.tithi,
+      moonPhaseLabel: moonPhaseLineRu(snap.elong, snap.illum),
+      nakshatraLabel: snap.nakshatra,
+      ekadashiFlag: snap.isEkadashi,
+      pradoshFlag: snap.isPradosh,
+    },
+  });
 
   return {
     date: dateStr,
@@ -339,7 +366,7 @@ export function buildProtocol(dateStr: string, bodySignals?: BodySignal | null):
       rice: { allowed: rice.allowed, reason: rice.reason },
       no_food_after_18: true,
     },
-    supplements: waterFastDay ? buildSupplementsWaterFastDay(d) : buildSupplements(d),
+    supplements: supplementsBlock,
     breathing_practice: {
       practice: br.practice, title_ru: br.title, minutes: br.min,
       best_time: br.time, posture: br.posture, technique: br.technique,

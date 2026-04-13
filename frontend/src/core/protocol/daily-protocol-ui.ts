@@ -6,9 +6,15 @@ import type {
   BreathingTemplateId,
   LoadTemplateId,
 } from "./protocol-rules";
+import type { Scales, DayType } from "./rules";
 
+import { toFive } from "@/lib/utils";
 import { resolveDailyProtocol } from "./rule-engine";
-import { buildRussianUiProtocol, formatSupplementsBlock } from "./protocol-ui-texts";
+import {
+  buildRussianUiProtocol,
+  formatSupplementsBlock,
+  SIGNAL_BASELINE_SELF_ASSESSMENT_HINT_RU,
+} from "./protocol-ui-texts";
 
 export interface DailyMeta {
   date: string;
@@ -124,7 +130,7 @@ function buildBadges(meta: DailyMeta, matchedRule: SignalRuleId): DailyStatusBad
     salt_craving: { label: "Тяга к соленому", tone: "warning" },
     sweet_craving_on_fatigue: { label: "Тяга к сладкому", tone: "warning" },
     tissue_heaviness: { label: "Плотность тканей", tone: "danger" },
-    baseline_no_signals: { label: "Базовый шаблон", tone: "neutral" },
+    baseline_no_signals: { label: "Без записи самочувствия", tone: "neutral" },
   };
 
   const mainBadge = ruleBadgeMap[matchedRule];
@@ -321,6 +327,153 @@ export interface BuildDailyProtocolInput {
   bodySignals: BodySignals;
   context: DayContext;
   hasCombinedZincSelenium?: boolean;
+}
+
+/** Правила, сработавшие по шкалам самочувствия (не календарные). */
+const SELF_REPORT_ADJUST_RULES: ReadonlySet<SignalRuleId> = new Set([
+  "mental_overheat",
+  "ankle_swelling",
+  "eye_swelling",
+  "poor_sleep",
+  "low_energy_no_swelling",
+  "low_energy_with_swelling",
+  "salt_craving",
+  "sweet_craving_on_fatigue",
+  "tissue_heaviness",
+]);
+
+const DAY_TYPE_STATUS_BADGE: Record<DayType, DailyStatusBadge> = {
+  stable_day: { label: "устойчивый день", tone: "neutral" },
+  drainage_day: { label: "день дренажа", tone: "info" },
+  caution_day: { label: "день осторожности", tone: "warning" },
+  high_sensitivity_day: { label: "чувствительный день", tone: "warning" },
+  ekadashi_day: { label: "экадаши", tone: "good" },
+  pradosh_day: { label: "прадош", tone: "warning" },
+  recovery_day_after_reduction: { label: "день восстановления", tone: "neutral" },
+  pre_full_moon_retention_day: { label: "канун полнолуния", tone: "danger" },
+  pre_new_moon_precision_day: { label: "канун новолуния", tone: "warning" },
+};
+
+const LOAD_PROFILE_LABEL_RU: Record<string, string> = {
+  walk_soft: "мягкое движение",
+  moderate: "умеренная нагрузка",
+  lymph_stretch: "лимфодренаж + растяжка",
+  no_overload: "без силовой нагрузки",
+};
+
+function scalesToSignalScores(scales: Scales): DailyScores {
+  return {
+    waterRetentionRisk: toFive(scales.water_retention_risk) as DailyScores["waterRetentionRisk"],
+    drainagePotential: toFive(scales.release_drainage_potential) as DailyScores["drainagePotential"],
+    nervousSystemLoad: toFive(scales.nervous_system_load) as DailyScores["nervousSystemLoad"],
+    rhythmPrecisionNeed: toFive(scales.need_for_rhythm_precision) as DailyScores["rhythmPrecisionNeed"],
+  };
+}
+
+function formatBreathingCanonical(bp: {
+  title_ru: string;
+  minutes: number;
+  best_time: string;
+  posture: string;
+  technique: string;
+  tongue_position: string;
+  contraindication: string;
+}): string {
+  const lines = [
+    `${bp.title_ru}, ${bp.minutes} мин, ${bp.best_time}.`,
+    `Поза: ${bp.posture}`,
+    `Техника: ${bp.technique}`,
+    `Язык: ${bp.tongue_position}`,
+  ];
+  if (bp.contraindication?.trim()) lines.push(bp.contraindication);
+  return lines.join("\n");
+}
+
+function formatMovementCanonical(profile: string, items: string[]): string {
+  const head = LOAD_PROFILE_LABEL_RU[profile] ?? profile;
+  return [head, ...items].join("\n");
+}
+
+function buildCanonicalSignalBadges(meta: DailyMeta, dayType: DayType, matchedRule: SignalRuleId): DailyStatusBadge[] {
+  const badges: DailyStatusBadge[] = [];
+  if (meta.ekadashiFlag && dayType !== "ekadashi_day") {
+    badges.push({ label: "Экадаши", tone: "info" });
+  }
+  if (meta.pradoshFlag && dayType !== "pradosh_day") {
+    badges.push({ label: "Прадош", tone: "warning" });
+  }
+  badges.push(DAY_TYPE_STATUS_BADGE[dayType]);
+  if (SELF_REPORT_ADJUST_RULES.has(matchedRule)) {
+    badges.push({ label: "Подстройка по самочувствию", tone: "info" });
+  }
+  return badges;
+}
+
+function signalSummaryWarning(matchedRule: SignalRuleId, engineWarning: string): string {
+  if (matchedRule === "baseline_no_signals") return SIGNAL_BASELINE_SELF_ASSESSMENT_HINT_RU;
+  if (SELF_REPORT_ADJUST_RULES.has(matchedRule) && engineWarning.trim()) return engineWarning;
+  return "";
+}
+
+export interface AlignSignalProtocolCanonicalInput {
+  matchedRule: SignalRuleId;
+  dayType: DayType;
+  scales: Scales;
+  breakfast: string;
+  lunchTitle: string;
+  lunchText: string;
+  supplementSlots: { time: string; items: string }[];
+  breathing: {
+    title_ru: string;
+    minutes: number;
+    best_time: string;
+    posture: string;
+    technique: string;
+    tongue_position: string;
+    contraindication: string;
+  };
+  movement: { profile: string; items: string[] };
+  bodyEffectSummary: string;
+  trackingMarkers: string[];
+  engineWarning: string;
+  meta: DailyMeta;
+}
+
+/** Синхронизирует блок «Сигнальный протокол» с расчётным протоколом (питание, дыхание, нагрузка, шкалы). */
+export function alignSignalProtocolUiWithCanonical(
+  base: DailyProtocolUi,
+  input: AlignSignalProtocolCanonicalInput,
+): DailyProtocolUi {
+  const supplementLines = input.supplementSlots.map((s) => `${s.time}: ${s.items}`);
+
+  return {
+    ...base,
+    meta: {
+      ...base.meta,
+      badges: buildCanonicalSignalBadges(input.meta, input.dayType, input.matchedRule),
+    },
+    summary: {
+      title: "Протокол на сегодня",
+      bodyEffect: input.bodyEffectSummary,
+      warning: signalSummaryWarning(input.matchedRule, input.engineWarning),
+    },
+    scores: scalesToSignalScores(input.scales),
+    protocol: {
+      ...base.protocol,
+      breakfast: input.breakfast,
+      lunchTitle: input.lunchTitle,
+      lunchText: input.lunchText,
+      supplements: supplementLines,
+      breathingTitle: base.protocol.breathingTitle,
+      breathingText: formatBreathingCanonical(input.breathing),
+      loadTitle: base.protocol.loadTitle,
+      loadText: formatMovementCanonical(input.movement.profile, input.movement.items),
+    },
+    tracking: {
+      ...base.tracking,
+      markers: input.trackingMarkers,
+    },
+  };
 }
 
 export function buildDailyProtocolUi(input: BuildDailyProtocolInput): DailyProtocolUi {

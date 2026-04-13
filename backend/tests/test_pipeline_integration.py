@@ -87,8 +87,8 @@ def _make_snapshot(
         nakshatra_pada=nakshatra_pada(moon),
         moon_illumination=moon_illumination_ratio(elong),
         moon_phase_ru=moon_phase_label_ru(elong),
-        is_ekadashi=(tithi == 11),
-        is_pradosh_day=(tithi == 13),
+        is_ekadashi=(tithi in (11, 26)),
+        is_pradosh_day=(tithi in (13, 28)),
     )
 
 
@@ -154,11 +154,24 @@ class TestStage1_AstroToSnapshot:
         assert snap.tithi == 11
         assert snap.is_ekadashi is True
 
+    def test_krishna_ekadashi_snapshot_tithi_26(self):
+        """Кришна-экадаши — 11-й титхи убывающей половины → номер 26 при нумерации 1–30."""
+        moon = (20.0 + 300.0) % 360.0
+        snap = _make_snapshot(sun=20.0, moon=moon)
+        assert snap.tithi == 26
+        assert snap.is_ekadashi is True
+
     def test_pradosh_snapshot(self):
         elong_for_13 = 12 * 12.0 + 6.0
         moon = (30.0 + elong_for_13) % 360.0
         snap = _make_snapshot(sun=30.0, moon=moon)
         assert snap.tithi == 13
+        assert snap.is_pradosh_day is True
+
+    def test_krishna_pradosh_snapshot_tithi_28(self):
+        moon = (30.0 + 330.0) % 360.0
+        snap = _make_snapshot(sun=30.0, moon=moon)
+        assert snap.tithi == 28
         assert snap.is_pradosh_day is True
 
     def test_nakshatra_and_pada(self):

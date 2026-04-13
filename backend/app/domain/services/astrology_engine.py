@@ -17,8 +17,8 @@ This module adds the Swiss Ephemeris layer on top.
 Assumptions (explicit):
 1) Snapshot moment for a calendar date = local time from settings (default 12:00),
    NOT sunrise/sunset.  Tithi/nakshatra may differ from sunrise-based calc.
-2) Ekadashi: date whose snapshot tithi == 11.
-3) Pradosh (MVP): date whose snapshot tithi == 13 (Trayodashi).
+2) Ekadashi: snapshot tithi 11 (шукла) or 26 (кришна-экадаши).
+3) Pradosh (MVP): snapshot tithi 13 (шукла) or 28 (кришна-трайодаши).
    Sunset-window calculation requires geolocation — deferred.
 """
 
@@ -158,8 +158,8 @@ class AstrologyEngine:
             nakshatra_pada=nak_pada,
             moon_illumination=illum,
             moon_phase_ru=phase_ru,
-            is_ekadashi=(t == 11),
-            is_pradosh_day=(t == 13),
+            is_ekadashi=(t in (11, 26)),
+            is_pradosh_day=(t in (13, 28)),
         )
 
     def analyze_transits_to_natal(

@@ -51,8 +51,12 @@ const RULE_TITLE_RU: Partial<Record<SignalRuleId, string>> = {
   salt_craving: "При сильной тяге к солёному",
   sweet_craving_on_fatigue: "Тяга к сладкому на усталости",
   tissue_heaviness: "Плотность и тяжесть тканей",
-  baseline_no_signals: "Базовый протокол дня",
+  baseline_no_signals: "Протокол на сегодня",
 };
+
+/** Единая подсказка при неполном самочувствии (сигнальный слой + трассировка). */
+export const SIGNAL_BASELINE_SELF_ASSESSMENT_HINT_RU =
+  "Нет полной картины самочувствия — показан расчётный протокол дня по календарю и шкалам (как в блоках ниже). Заполните «Самочувствие», чтобы подстроить рекомендации по телу.";
 
 const RULE_BODY_RU: Partial<Record<SignalRuleId, string>> = {
   stable_state:
@@ -78,7 +82,7 @@ const RULE_BODY_RU: Partial<Record<SignalRuleId, string>> = {
     "Сладкое на усталости — не решение; энергию не добирать сахаром, ориентир на шаблон обеда.",
   tissue_heaviness: "Ткани плотные — ранний простой обед без гарнира и без утяжеления.",
   baseline_no_signals:
-    "Нет полной картины самочувствия — показан базовый шаблон; при необходимости заполните «Самочувствие».",
+    "Расчёт по календарю и шкалам без записи самочувствия — детали совпадают с основным протоколом ниже.",
 };
 
 export interface BuildRussianUiProtocolInput {
