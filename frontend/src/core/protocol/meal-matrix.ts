@@ -1,6 +1,14 @@
 import type { DayType, Scales } from "./rules";
+import { WATER_ONLY_FAST_DAY_TEXT } from "../profile/fixed-rules";
 
 export interface Meal { protein: string; vegetables: string; full_description: string }
+
+/** Единый вариант для экадаши и прадоша: без пищи, только вода. */
+const WATER_ONLY_MEAL: Meal = {
+  protein: "—",
+  vegetables: "—",
+  full_description: WATER_ONLY_FAST_DAY_TEXT,
+};
 
 export const MEALS: Record<string, Meal[]> = {
   A_stable: [
@@ -34,19 +42,8 @@ export const MEALS: Record<string, Meal[]> = {
     { protein: "минтай 130 г", vegetables: "лук порей, шампиньоны тушёные, зелень 10–15 г (укроп/петрушка)", full_description: "Лёгкий обед: минтай 130 г; лук порей и шампиньоны тушёные; зелень укроп или петрушка." },
     { protein: "треска 130 г", vegetables: "паста 55 г, лук порей, шампиньоны, зелень 10–15 г (укроп/петрушка)", full_description: "Лёгкий обед: треска 130 г; паста 55 г с луком пореем и шампиньонами; зелень укроп или петрушка." },
   ],
-  D_ekadashi: [
-    { protein: "—", vegetables: "цветная капуста, сладкий болгарский перец, черри 3 шт., адыгейский сыр 40 г, зелень 10–15 г (укроп/петрушка)", full_description: "Цветная капуста, сладкий болгарский перец, 3 черри; адыгейский сыр 40 г — без мяса; зелень укроп или петрушка." },
-    { protein: "—", vegetables: "стручковая фасоль, кабачок, сладкий болгарский перец, зелень 10–15 г (укроп/петрушка)", full_description: "Стручковая фасоль, кабачок, сладкий болгарский перец — без мяса; зелень укроп или петрушка." },
-    { protein: "—", vegetables: "брокколи, пекинская капуста, сладкий болгарский перец, зелень 10–15 г (укроп/петрушка)", full_description: "Брокколи на пару; пекинская капуста и сладкий болгарский перец — без мяса; зелень укроп или петрушка." },
-    { protein: "—", vegetables: "баклажан, сладкий болгарский перец, цветная капуста, зелень 10–15 г (укроп/петрушка)", full_description: "Баклажан, сладкий болгарский перец, цветная капуста — без мяса; зелень укроп или петрушка." },
-    { protein: "—", vegetables: "белокочанная капуста тушёная, морковь, перец рамиро или сладкий болгарский, зелень 10–15 г (укроп/петрушка)", full_description: "Белокочанная капуста тушёная, морковь, перец рамиро или сладкий болгарский — без мяса; зелень укроп или петрушка." },
-  ],
-  E_pradosh: [
-    { protein: "курица 110 г", vegetables: "кабачок, морковь, адыгейский сыр 40 г, зелень 10–15 г (укроп/петрушка)", full_description: "Ранний обед: курица 110 г тушёная с кабачком и морковью; адыгейский сыр 40 г к овощам; зелень укроп или петрушка." },
-    { protein: "телятина 100 г", vegetables: "брокколи, морковь, зелень 10–15 г (укроп/петрушка)", full_description: "Ранний обед: телятина 100 г тушёная с брокколи и морковью; зелень укроп или петрушка." },
-    { protein: "говядина 85 г", vegetables: "брокколи, морковь, зелень 10–15 г (укроп/петрушка)", full_description: "Ранний обед: говядина 85 г тушёная с брокколи и морковью; зелень укроп или петрушка." },
-    { protein: "форель 120 г", vegetables: "паста 60 г, лук порей, шампиньоны, зелень 10–15 г (укроп/петрушка)", full_description: "Ранний обед: форель 120 г запечённая; паста с луком пореем и шампиньонами; зелень укроп или петрушка." },
-  ],
+  D_ekadashi: [WATER_ONLY_MEAL, WATER_ONLY_MEAL, WATER_ONLY_MEAL, WATER_ONLY_MEAL, WATER_ONLY_MEAL],
+  E_pradosh: [WATER_ONLY_MEAL, WATER_ONLY_MEAL, WATER_ONLY_MEAL, WATER_ONLY_MEAL],
   F_grain: [
     {
       protein: "курица 115 г",
@@ -139,7 +136,11 @@ export function decideRice(dt: DayType, scales: Scales): { allowed: boolean; rea
   if (GRAIN_FORBIDDEN.has(dt)) {
     const dtLabel = dt === "ekadashi_day" ? "Экадаши" : dt === "pradosh_day" ? "Прадош" : dt === "caution_day" ? "День повышенного внимания" : dt === "pre_full_moon_retention_day" ? "Канун полнолуния" : "Канун новолуния";
     trace.push(`Тип дня (${dtLabel}) — гарнир из крупы не включён`);
-    return { allowed: false, reason: `${dtLabel} — обед без крупяного гарнира.`, trace };
+    const noGrainReason =
+      dt === "ekadashi_day" || dt === "pradosh_day"
+        ? `${dtLabel} — без пищи, только вода; крупа не применяется.`
+        : `${dtLabel} — обед без крупяного гарнира.`;
+    return { allowed: false, reason: noGrainReason, trace };
   }
   if (scales.water_retention_risk >= 65) {
     trace.push(`Шкала удержания ${scales.water_retention_risk}/100 — гарнир не рекомендуется`);
@@ -158,7 +159,10 @@ export function decideRice(dt: DayType, scales: Scales): { allowed: boolean; rea
 }
 
 export function lunchTime(dt: DayType): { window: string; early: boolean } {
-  const early = new Set<DayType>(["ekadashi_day", "pradosh_day", "pre_full_moon_retention_day", "drainage_day"]);
+  if (dt === "ekadashi_day" || dt === "pradosh_day") {
+    return { window: "без приёма пищи — только вода", early: false };
+  }
+  const early = new Set<DayType>(["pre_full_moon_retention_day", "drainage_day"]);
   if (early.has(dt)) return { window: "12:30–14:00", early: true };
   if (dt === "caution_day" || dt === "pre_new_moon_precision_day") return { window: "12:30–13:30", early: true };
   return { window: "13:00–15:00", early: false };

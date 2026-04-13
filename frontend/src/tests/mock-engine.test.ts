@@ -501,16 +501,19 @@ describe("Unit: interpretSignals", () => {
 // ── Lunch time ─────────────────────────────────────────────
 
 describe("Unit: lunchTime", () => {
-  it("ekadashi → early", () => expect(T.lunchTime("ekadashi_day").early).toBe(true));
-  it("pradosh → early", () => expect(T.lunchTime("pradosh_day").early).toBe(true));
+  it("ekadashi → only water, not early lunch window", () => {
+    expect(T.lunchTime("ekadashi_day").early).toBe(false);
+    expect(T.lunchTime("ekadashi_day").window).toContain("только вода");
+  });
+  it("pradosh → only water", () => {
+    expect(T.lunchTime("pradosh_day").early).toBe(false);
+    expect(T.lunchTime("pradosh_day").window).toContain("только вода");
+  });
   it("drainage → early", () => expect(T.lunchTime("drainage_day").early).toBe(true));
   it("stable → not early", () => expect(T.lunchTime("stable_day").early).toBe(false));
   it("caution → early", () => expect(T.lunchTime("caution_day").early).toBe(true));
   it("stable → main window 13:00–15:00", () => {
     expect(T.lunchTime("stable_day").window).toBe("13:00–15:00");
-  });
-  it("pradosh → early window 12:30–14:00", () => {
-    expect(T.lunchTime("pradosh_day").window).toBe("12:30–14:00");
   });
 });
 
@@ -765,6 +768,32 @@ describe("Integration: buildProtocol — structure", () => {
   it("moon illumination is percentage 0-100", () => {
     expect(p.moon_illumination_pct).toBeGreaterThanOrEqual(0);
     expect(p.moon_illumination_pct).toBeLessThanOrEqual(100);
+  });
+});
+
+describe("Integration: ekadashi and pradosh water fast", () => {
+  it("ekadashi day has no food, only water in nutrition blocks", () => {
+    const hit = buildCalendarMonth(2026, 4).find((d) => d.ekadashi_flag);
+    if (!hit) throw new Error("expected ekadashi in April 2026 calendar");
+    const p = buildProtocol(hit.date);
+    expect(p.day_type).toBe("ekadashi_day");
+    expect(p.nutrition.breakfast.toLowerCase()).toMatch(/только вода|пищи нет/);
+    expect(p.nutrition.lunch.full_description).toMatch(/Пищи нет|только вода/);
+    expect(p.nutrition.lunch.time_window).toContain("только вода");
+    expect(p.signal_protocol_ui?.protocol.lunchText).toMatch(/Питание сегодня|только вода/);
+  });
+
+  it("pradosh day has no food, only water", () => {
+    let prDate: string | null = null;
+    for (let m = 1; m <= 12 && !prDate; m++) {
+      const d = buildCalendarMonth(2026, m).find((x) => x.pradosh_flag);
+      if (d) prDate = d.date;
+    }
+    if (!prDate) throw new Error("expected pradosh in 2026 calendar");
+    const p = buildProtocol(prDate);
+    expect(p.day_type).toBe("pradosh_day");
+    expect(p.nutrition.lunch.full_description).toMatch(/Пищи нет|только вода/);
+    expect(p.nutrition.lunch.protein).toBe("—");
   });
 });
 

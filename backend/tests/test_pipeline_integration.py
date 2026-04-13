@@ -42,7 +42,11 @@ from app.domain.services.breath_selector import select_breathing
 from app.domain.services.meal_matrices import pick_meal
 from app.domain.services.mudra_selector import select_mudra
 from app.domain.services.rice_policy import decide_rice
-from app.domain.services.supplements import build_supplements
+from app.domain.services.supplements import (
+    WATER_ONLY_FAST_DAY_TEXT,
+    build_supplements,
+    build_supplements_water_fast_day,
+)
 from app.domain.services.thyroid_safety import build_thyroid_safety
 
 
@@ -395,7 +399,13 @@ def _build_protocol_from_snapshot(
         _WEEKDAY_RU,
     )
     from app.domain.models.protocol import (
-        LoadBlock, LunchSpec, NutritionBlock, RuleTrace,
+        AlignmentScaleDeltas,
+        AstroAlignment,
+        LoadBlock,
+        LunchSpec,
+        LunarSolarNakPair,
+        NutritionBlock,
+        RuleTrace,
     )
     from app.domain.services.thyroid_safety import THYROID_NOTES
     from app.domain.services.meal_matrix_labels_ru import meal_matrix_label_ru
@@ -430,6 +440,12 @@ def _build_protocol_from_snapshot(
     time_win, early = _lunch_time(day_type)
     mental_high = (body_signals.head_overload or 0) >= 4 if body_signals else False
     breath, breath_trace = select_breathing(day_type, mental_overload=mental_high)
+    if day_type in (DayType.ekadashi_day, DayType.pradosh_day):
+        breath = breath.model_copy(
+            update={
+                "best_time": "Когда удобно днём — без привязки к обеду (пищи по протоколу нет, только вода).",
+            },
+        )
     mudra, mudra_trace = select_mudra(
         day_type,
         high_retention_risk=scales.water_retention_risk >= 65,
@@ -451,6 +467,8 @@ def _build_protocol_from_snapshot(
     thyroid = build_thyroid_safety()
     thyroid_trace = [f"THYROID: conservative, {len(THYROID_NOTES)} rules"]
 
+    alignment_rules = ["ALIGN: тестовый конвейер — сверка D1/D9 в этом хелпере не выполняется"]
+
     rule_trace = RuleTrace(
         day_type_rules=dt_trace,
         scales_modifiers=scales_trace,
@@ -462,6 +480,21 @@ def _build_protocol_from_snapshot(
         meal_matrix_rules=mm_trace,
         load_rules=load_trace,
         aroma_rules=aroma_trace,
+        alignment_rules=alignment_rules,
+    )
+
+    water_fast = day_type in (DayType.ekadashi_day, DayType.pradosh_day)
+    breakfast_final = WATER_ONLY_FAST_DAY_TEXT if water_fast else _BREAKFAST
+    supp_final = build_supplements_water_fast_day(d) if water_fast else build_supplements(d)
+
+    astro_alignment_stub = AstroAlignment(
+        summary="Тест: сверка D1/D9 в этом хелпере не выполняется.",
+        checks=[],
+        scale_deltas=AlignmentScaleDeltas(wr=0.0, rel=0.0, nrv=0.0, rhy=0.0),
+        natal_moon=LunarSolarNakPair(d1_nak="—", d9_nak="—"),
+        transit_moon=LunarSolarNakPair(d1_nak="—", d9_nak="—"),
+        natal_sun=LunarSolarNakPair(d1_nak="—", d9_nak="—"),
+        transit_sun=LunarSolarNakPair(d1_nak="—", d9_nak="—"),
     )
 
     return DailyProtocol(
@@ -475,7 +508,7 @@ def _build_protocol_from_snapshot(
         day_type=day_type,
         body_effect_summary=_EFFECT[day_type],
         nutrition=NutritionBlock(
-            breakfast=_BREAKFAST,
+            breakfast=breakfast_final,
             lunch=LunchSpec(
                 matrix_used=meal_matrix,
                 protein=meal.protein,
@@ -486,7 +519,7 @@ def _build_protocol_from_snapshot(
             ),
             rice=rice,
         ),
-        supplements=build_supplements(d),
+        supplements=supp_final,
         breathing_practice=breath,
         mudra_recommendation=mudra,
         aroma_protocol=aroma,
@@ -497,6 +530,7 @@ def _build_protocol_from_snapshot(
         scales=scales,
         moon_illumination_pct=round(snap.moon_illumination * 100, 1),
         matrix_index=mx,
+        astro_alignment=astro_alignment_stub,
         rule_trace=rule_trace,
     )
 
@@ -541,9 +575,26 @@ class TestStage6_FullPipeline:
         assert proto.ekadashi_flag is True
         assert proto.nutrition.lunch.matrix_used == MealMatrix.D_EKADASHI
         assert proto.nutrition.lunch.protein == "—"
+        assert "вода" in proto.nutrition.breakfast.lower()
+        assert "пищи нет" in proto.nutrition.lunch.full_description.lower()
         assert proto.nutrition.rice.allowed is False
         assert any("ekadashi" in r.lower() for r in proto.rule_trace.day_type_rules)
         assert any("круп" in r.lower() for r in proto.rule_trace.rice_rules)
+
+    def test_pradosh_full_pipeline(self):
+        moon = (30.0 + 150.0) % 360.0  # tithi=13
+        snap = _make_snapshot(sun=30.0, moon=moon)
+        assert snap.is_pradosh_day
+        analysis = _make_analysis(snap, default_user_natal())
+        proto = _build_protocol_from_snapshot(date(2026, 5, 24), snap, analysis)
+
+        assert proto.day_type == DayType.pradosh_day
+        assert proto.pradosh_flag is True
+        assert proto.nutrition.lunch.matrix_used == MealMatrix.E_PRADOSH
+        assert proto.nutrition.lunch.protein == "—"
+        assert "вода" in proto.nutrition.breakfast.lower()
+        assert "пищи нет" in proto.nutrition.lunch.full_description.lower()
+        assert proto.nutrition.rice.allowed is False
 
     def test_pre_full_moon_full_pipeline(self):
         snap = _make_snapshot(sun=10.0, moon=192.0)
@@ -620,3 +671,4 @@ class TestStage6_FullPipeline:
         assert len(rt.meal_matrix_rules) >= 1
         assert len(rt.load_rules) >= 1
         assert len(rt.aroma_rules) >= 3
+        assert len(rt.alignment_rules) >= 1

@@ -5,8 +5,8 @@ from app.domain.models.protocol import DailyScales, RiceDecision
 from app.domain.services.body_signal_interpreter import SignalOverride
 
 _RICE_FORBIDDEN_REASON: dict[DayType, str] = {
-    DayType.ekadashi_day: "В день экадаши крупа не входит в протокол.",
-    DayType.pradosh_day: "В день прадоша крупа не входит в протокол.",
+    DayType.ekadashi_day: "Экадаши — без пищи, только вода; крупа не применяется.",
+    DayType.pradosh_day: "Прадоша — без пищи, только вода; крупа не применяется.",
     DayType.pre_full_moon_retention_day: "В канун полнолуния крупа не входит в протокол.",
     DayType.pre_new_moon_precision_day: "В канун новолуния крупа не входит в протокол.",
     DayType.caution_day: "В этот день риск отёков и перегруз нервной системы — крупу не добавляем.",

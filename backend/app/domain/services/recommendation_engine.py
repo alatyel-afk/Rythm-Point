@@ -39,7 +39,11 @@ from app.domain.services.meal_matrices import pick_meal
 from app.domain.services.meal_matrix_labels_ru import meal_matrix_label_ru
 from app.domain.services.mudra_selector import select_mudra
 from app.domain.services.rice_policy import decide_rice
-from app.domain.services.supplements import build_supplements
+from app.domain.services.supplements import (
+    WATER_ONLY_FAST_DAY_TEXT,
+    build_supplements,
+    build_supplements_water_fast_day,
+)
 from app.domain.services.thyroid_safety import THYROID_NOTES, build_thyroid_safety
 
 _WEEKDAY_RU = ("понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресенье")
@@ -198,7 +202,9 @@ def _select_meal_matrix(day_type: DayType) -> MealMatrix:
 # ── Lunch time ──────────────────────────────────────────
 
 def _lunch_time(day_type: DayType) -> tuple[str, bool]:
-    early_types = {DayType.ekadashi_day, DayType.pradosh_day, DayType.pre_full_moon_retention_day, DayType.drainage_day}
+    if day_type in (DayType.ekadashi_day, DayType.pradosh_day):
+        return "без приёма пищи — только вода", False
+    early_types = {DayType.pre_full_moon_retention_day, DayType.drainage_day}
     if day_type in early_types:
         return "12:15–12:45", True
     if day_type in (DayType.caution_day, DayType.pre_new_moon_precision_day):
@@ -228,8 +234,8 @@ _EFFECT: dict[DayType, str] = {
     DayType.drainage_day: "День мягкого высвобождения: ранний обед, движение, без обезвоживания.",
     DayType.caution_day: "Повышенная осторожность: выше риск задержки + нервная нагрузка одновременно.",
     DayType.high_sensitivity_day: "Высокая чувствительность нервной системы: упрощённый обед, дыхание на снижение.",
-    DayType.ekadashi_day: "Экадаши: снизить объём, упростить обед, опора на дыхание и ранний ритм.",
-    DayType.pradosh_day: "Прадоша: вечер без споров, без компенсации едой, ранний обед.",
+    DayType.ekadashi_day: "Экадаши: без пищи, только вода; дыхание и мягкое движение; вечером без компенсации.",
+    DayType.pradosh_day: "Прадоша: без пищи, только вода; вечер без споров и без компенсации едой.",
     DayType.recovery_day_after_reduction: "Восстановление: без скачка порций, без новых продуктов.",
     DayType.pre_full_moon_retention_day: "Полнолуние: усилена чувствительность к водному балансу, без соусов и жареного.",
     DayType.pre_new_moon_precision_day: "Новолуние: точность ритма критична, обед ровный и предсказуемый.",
@@ -245,9 +251,11 @@ def _build_warnings(day_type: DayType, scales: DailyScales, signal_ov: SignalOve
     if scales.nervous_system_load >= 70:
         w.append("Снизить стимуляцию вечером: только вечерние добавки по слоту, без кофеина сверх завтрака.")
     if day_type == DayType.ekadashi_day:
-        w.append("Не переносить голод на ночной перекус — после 18:00 пищи нет.")
+        w.append(
+            "Только вода — не есть после 18:00. Если тяжело, тёплая вода малыми глотками, без соков и сладких напитков."
+        )
     if day_type == DayType.pradosh_day:
-        w.append("Не решать спорные темы вечером с пустым желудком.")
+        w.append("Вечером без споров; пищи по протоколу нет — нервная система чувствительнее.")
     if day_type == DayType.pre_full_moon_retention_day:
         w.append("Полнолуние влияет на сон: без острых специй сверх фиксированного завтрака.")
     w.extend(signal_ov.extra_warnings)
@@ -362,6 +370,12 @@ class RecommendationEngine:
 
         mental_high = (body_signals.head_overload or 0) >= 4 if body_signals else False
         breath, breath_trace = select_breathing(day_type, mental_overload=mental_high)
+        if day_type in (DayType.ekadashi_day, DayType.pradosh_day):
+            breath = breath.model_copy(
+                update={
+                    "best_time": "Когда удобно днём — без привязки к обеду (пищи по протоколу нет, только вода).",
+                },
+            )
 
         mudra, mudra_trace = select_mudra(
             day_type,
@@ -424,6 +438,10 @@ class RecommendationEngine:
                 "signal_override": asdict(sig_ov) if body_signals else None,
             }
 
+        water_fast = day_type in (DayType.ekadashi_day, DayType.pradosh_day)
+        breakfast_txt = WATER_ONLY_FAST_DAY_TEXT if water_fast else _BREAKFAST
+        supp_block = build_supplements_water_fast_day(d) if water_fast else build_supplements(d)
+
         return DailyProtocol(
             date=d,
             weekday=_WEEKDAY_RU[d.weekday()],
@@ -435,7 +453,7 @@ class RecommendationEngine:
             day_type=day_type,
             body_effect_summary=_EFFECT[day_type],
             nutrition=NutritionBlock(
-                breakfast=_BREAKFAST,
+                breakfast=breakfast_txt,
                 lunch=LunchSpec(
                     matrix_used=meal_matrix,
                     protein=meal.protein,
@@ -446,7 +464,7 @@ class RecommendationEngine:
                 ),
                 rice=rice,
             ),
-            supplements=build_supplements(d),
+            supplements=supp_block,
             breathing_practice=breath,
             mudra_recommendation=mudra,
             aroma_protocol=aroma,

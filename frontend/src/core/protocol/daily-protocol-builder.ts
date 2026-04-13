@@ -13,7 +13,13 @@ import { selectMudra } from "./mudra-rules";
 import { buildRotatingAroma } from "./aroma-rules";
 import { buildMovementGuidance } from "./movement-guidance";
 import { THYROID_NOTES } from "./thyroid-safety";
-import { BREAKFAST, WEEKDAYS, buildSupplements } from "../profile/fixed-rules";
+import {
+  BREAKFAST,
+  WEEKDAYS,
+  WATER_ONLY_FAST_DAY_TEXT,
+  buildSupplements,
+  buildSupplementsWaterFastDay,
+} from "../profile/fixed-rules";
 import { interpretSignals } from "../tracking/signal-interpreter";
 import { mealMatrixLabel } from "@/lib/meal-matrix-labels";
 import { buildDailyProtocolUi } from "./daily-protocol-ui";
@@ -29,8 +35,10 @@ const EFFECTS: Record<DayType, string> = {
   caution_day:
     "Сочетание риска удержания в тканях и перегруза нервной системы. Обед лёгкий, без гарнира, нагрузку снизить — снимать конфликт контуров, а не «давить на воду».",
   high_sensitivity_day: "Нервная система перегружена. Обед проще, порции меньше, дыхание на успокоение.",
-  ekadashi_day: "Экадаши — обед без мяса, порции меньше. Горячая вода, дыхание. Не голодать до срыва вечером.",
-  pradosh_day: "Прадош — ранний обед с мясом, но без гарнира. Вечером не компенсировать усталость едой.",
+  ekadashi_day:
+    "Экадаши — без пищи, только вода (тёплая по желанию, без калорийных напитков). Дыхание и мягкое движение. После 18:00 пищи нет — не срываться компенсацией.",
+  pradosh_day:
+    "Прадоша — без пищи, только вода, как в экадаши. Вечером без споров и без компенсации усталости едой.",
   recovery_day_after_reduction: "Вчера была разгрузка. Сегодня не увеличивать порции и не добавлять новые продукты.",
   pre_full_moon_retention_day: "Канун полнолуния — тело копит воду. Без гарнира, без соусов, без жареного. Обед лёгкий.",
   pre_new_moon_precision_day: "Канун новолуния — важно не сбить режим. Обед ровный и предсказуемый, время еды без сдвигов.",
@@ -55,8 +63,16 @@ function buildSelectionAssurance(
   dayType: DayType,
   astroSummary: string
 ): string {
-  const dtRu = DAY_TYPE_LABEL_RU[dayType];
   const illumPct = Math.round(snap.illum * 1000) / 10;
+  if (dayType === "ekadashi_day" || dayType === "pradosh_day") {
+    const kind = dayType === "ekadashi_day" ? "экадаши" : "прадош";
+    return (
+      `Тип дня — «${kind}»: пищи по протоколу нет, только вода (тёплая по желанию, равномерно в течение дня; без калорийных напитков). ` +
+      `Контекст расчёта: накшатра «${snap.nakshatra}», титхи ${snap.tithi} (${tithiName}), фаза — «${snap.phase}» (~${illumPct}% освещённости диска). ` +
+      `Дыхание и движение согласованы с постом; нутрицевтики без еды — только по врачу. ${astroSummary}`
+    );
+  }
+  const dtRu = DAY_TYPE_LABEL_RU[dayType];
   return (
     `Состав обеда подобран автоматически из текущих данных: транзит Луны в накшатре «${snap.nakshatra}», титхи ${snap.tithi} (${tithiName}), фаза — «${snap.phase}» (~${illumPct}% освещённости диска). ` +
     `Тип дня — «${dtRu}»; матрица тарелки и крупа рассчитаны после сверки натального профиля с транзитом (D1/D9) и поправок по шкалам — приложение не подбирает ингредиенты произвольно и не ротирует их вне этих правил. ` +
@@ -69,8 +85,9 @@ function buildWarnings(dt: DayType, scales: Scales): string[] {
   const w: string[] = [];
   if (scales.water_retention_risk >= 65) w.push("Вечером посмотреть на лодыжки. Если отёк больше обычного — утром проверить зону под глазами.");
   if (scales.nervous_system_load >= 70) w.push("Вечером без лишнего кофеина. Только вечерний слот добавок (магний, ГАМК, 5-HTP).");
-  if (dt === "ekadashi_day") w.push("Голод — не повод есть после 18:00. Если тяжело — горячая вода.");
-  if (dt === "pradosh_day") w.push("Вечером не принимать серьёзных решений и не ввязываться в споры. Желудок пустой, нервная система на взводе.");
+  if (dt === "ekadashi_day") w.push("Только вода — не есть после 18:00. Если тяжело, добавить тёплой воды малыми глотками, без соков и сладких напитков.");
+  if (dt === "pradosh_day")
+    w.push("Вечером не принимать серьёзных решений и не ввязываться в споры. Пищи по протоколу нет — нервная система чувствительнее.");
   if (dt === "pre_full_moon_retention_day") w.push("Полнолуние ухудшает сон. Никаких острых специй сверх фиксированного завтрака.");
   return w;
 }
@@ -180,6 +197,12 @@ export function buildProtocol(dateStr: string, bodySignals?: BodySignal | null):
       breathTrace.push("Голова перегружена — переключено на удлинённый выдох для успокоения");
     }
   }
+  if (dayType === "ekadashi_day" || dayType === "pradosh_day") {
+    br = {
+      ...br,
+      time: "Когда удобно днём — без привязки к обеду (пищи по протоколу нет, только вода).",
+    };
+  }
   breathTrace.push(`Выбрано: ${br.title}, ${br.min} мин`);
 
   const highRetention = scales.water_retention_risk >= 65 || (ov?.forceRetentionMatrix ?? false);
@@ -247,11 +270,15 @@ export function buildProtocol(dateStr: string, bodySignals?: BodySignal | null):
   const alignmentRules = [
     astro.summary,
     ...astro.checks,
-    "Рекомендации по набору продуктов (обед) строятся после этой сверки и применённых к шкалам поправок.",
+    dayType === "ekadashi_day" || dayType === "pradosh_day"
+      ? "В этот день питание — только вода без пищи; сопутствующие блоки протокола следуют сверке D1/D9 и шкалам."
+      : "Рекомендации по набору продуктов (обед) строятся после этой сверки и применённых к шкалам поправок.",
   ];
 
   const tithiLabel = tithiNameRu(snap.tithi);
   const natal_forecast = buildNatalDayForecast(NATAL, snap, tithiLabel);
+
+  const waterFastDay = dayType === "ekadashi_day" || dayType === "pradosh_day";
 
   const signal_protocol_ui_base = buildDailyProtocolUi({
     meta: {
@@ -294,7 +321,7 @@ export function buildProtocol(dateStr: string, bodySignals?: BodySignal | null):
     day_type: dayType,
     body_effect_summary: EFFECTS[dayType],
     nutrition: {
-      breakfast: BREAKFAST,
+      breakfast: waterFastDay ? WATER_ONLY_FAST_DAY_TEXT : BREAKFAST,
       selection_assurance: buildSelectionAssurance(
         snap,
         tithiLabel,
@@ -312,7 +339,7 @@ export function buildProtocol(dateStr: string, bodySignals?: BodySignal | null):
       rice: { allowed: rice.allowed, reason: rice.reason },
       no_food_after_18: true,
     },
-    supplements: buildSupplements(d),
+    supplements: waterFastDay ? buildSupplementsWaterFastDay(d) : buildSupplements(d),
     breathing_practice: {
       practice: br.practice, title_ru: br.title, minutes: br.min,
       best_time: br.time, posture: br.posture, technique: br.technique,

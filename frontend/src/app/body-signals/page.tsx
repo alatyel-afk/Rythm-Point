@@ -10,6 +10,7 @@ import {
   analyzeWellbeingHistory,
   bodySignalChangedProtocol,
   formatHistoryReportPlainText,
+  type WellbeingHistoryReport,
 } from "@/core/tracking/wellbeing-history-analysis";
 import { mergeWellbeingHistoryWithLocal, persistWellbeingDay } from "@/lib/wellbeing-local-store";
 
@@ -49,6 +50,165 @@ function signalSummary(sig: BodySignal): string[] {
   return parts;
 }
 
+function fmtAvg(n: number | null, digits = 1): string {
+  if (n == null) return "—";
+  return n.toFixed(digits);
+}
+
+function WellbeingReportReaderModal({
+  open,
+  onClose,
+  report,
+  rangeDays,
+}: {
+  open: boolean;
+  onClose: () => void;
+  report: WellbeingHistoryReport;
+  rangeDays: number;
+}) {
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
+
+  useEffect(() => {
+    if (open) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  if (!open) return null;
+
+  const { stats } = report;
+  const a = stats.avg;
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-stretch justify-center sm:items-center sm:p-5 bg-black/50 backdrop-blur-[3px]"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="wellbeing-report-title"
+    >
+      <button
+        type="button"
+        className="absolute inset-0 cursor-default"
+        aria-label="Закрыть отчёт"
+        onClick={onClose}
+      />
+      <div
+        className="relative flex h-full sm:h-auto max-h-full sm:max-h-[min(90vh,880px)] w-full max-w-2xl flex-col rounded-none sm:rounded-2xl border border-border-strong bg-surface-card shadow-[var(--shadow-premium-lg)] sm:my-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex shrink-0 items-center justify-between gap-3 border-b border-border bg-surface-card px-5 py-4 sm:rounded-t-2xl">
+          <div>
+            <h2 id="wellbeing-report-title" className="font-display text-xl font-semibold tracking-tight text-ink-strong">
+              Отчёт по самочувствию
+            </h2>
+            <p className="mt-1 text-sm text-ink-secondary">
+              Период выборки: последние {rangeDays} дн.
+              {stats.count > 0 && stats.fromDate && stats.toDate
+                ? ` · записи с ${stats.fromDate} по ${stats.toDate}`
+                : ""}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="shrink-0 rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white hover:bg-accent-dark transition-colors"
+          >
+            Закрыть
+          </button>
+        </div>
+
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-6 sm:px-7 sm:py-8">
+          {stats.count > 0 && (
+            <section className="mb-8 rounded-xl border border-sage/25 bg-sage-soft/50 px-4 py-4 sm:px-5">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-sage mb-3">Сводка по данным</h3>
+              <p className="text-sm text-ink-secondary mb-2">
+                Записей с отметками: <span className="font-semibold text-ink">{stats.count}</span>
+                {stats.weightTrend && (
+                  <>
+                    {" "}
+                    · вес: {stats.weightTrend.firstKg} → {stats.weightTrend.lastKg} кг (Δ{" "}
+                    {stats.weightTrend.deltaKg > 0 ? "+" : ""}
+                    {stats.weightTrend.deltaKg})
+                  </>
+                )}
+              </p>
+              <p className="text-sm text-ink-secondary leading-relaxed">
+                Средние (0–5, где есть): лодыжки {fmtAvg(a.ankles)}, глаза {fmtAvg(a.eye)}, сон{" "}
+                {fmtAvg(a.sleep)}, энергия {fmtAvg(a.energy)}, сладкое {fmtAvg(a.sweet)}, солёное{" "}
+                {fmtAvg(a.salty)}, голова {fmtAvg(a.head)}, тяжесть после еды {fmtAvg(a.heaviness)}.
+              </p>
+            </section>
+          )}
+
+          <section className="mb-8">
+            <h3 className="mb-3 font-display text-lg font-semibold text-ink-strong">Анализ и выводы</h3>
+            <ul className="space-y-3 text-[15px] sm:text-base leading-relaxed text-ink pl-1">
+              {report.insights.map((line, i) => (
+                <li key={i} className="flex gap-3">
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden />
+                  <span>{line}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="mb-8">
+            <h3 className="mb-3 font-display text-lg font-semibold text-ink-strong">Рекомендации: вес и контур</h3>
+            {report.weightRecommendations.length > 0 ? (
+              <ul className="space-y-3 text-[15px] sm:text-base leading-relaxed text-ink pl-1">
+                {report.weightRecommendations.map((line, i) => (
+                  <li key={i} className="flex gap-3">
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-gold" aria-hidden />
+                    <span>{line}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-[15px] text-ink-tertiary leading-relaxed">
+                Когда накопится несколько дней записей, здесь появятся рекомендации по весу и задержке жидкости.
+              </p>
+            )}
+          </section>
+
+          <section>
+            <h3 className="mb-3 font-display text-lg font-semibold text-ink-strong">
+              Рекомендации: эмоциональный фон
+            </h3>
+            {report.emotionRecommendations.length > 0 ? (
+              <ul className="space-y-3 text-[15px] sm:text-base leading-relaxed text-ink pl-1">
+                {report.emotionRecommendations.map((line, i) => (
+                  <li key={i} className="flex gap-3">
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent-info" aria-hidden />
+                    <span>{line}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-[15px] text-ink-tertiary leading-relaxed">
+                После нескольких отметок сна, энергии и перегруза головы здесь появятся советы по настроению и режиму.
+              </p>
+            )}
+          </section>
+
+          <p className="mt-8 text-xs text-ink-tertiary leading-relaxed border-t border-border pt-4">
+            Отчёт строится по вашим отметкам и календарю протокола; это не медицинский диагноз. При сомнениях
+            ориентируйтесь на врача и на собственные ощущения.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function BodySignalsPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -80,8 +240,13 @@ function BodySignalsPageContent() {
   const [histErr, setHistErr] = useState("");
   const [historyLoading, setHistoryLoading] = useState(false);
   const [historyRangeDays, setHistoryRangeDays] = useState<7 | 30 | 90>(30);
+  const [reportReaderOpen, setReportReaderOpen] = useState(false);
 
   const historyReport = useMemo(() => analyzeWellbeingHistory(history), [history]);
+
+  useEffect(() => {
+    if (tab !== "history") setReportReaderOpen(false);
+  }, [tab]);
 
   useEffect(() => {
     const t = searchParams.get("tab");
@@ -396,6 +561,14 @@ function BodySignalsPageContent() {
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"
+                onClick={() => setReportReaderOpen(true)}
+                disabled={historyLoading}
+                className="rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-accent-dark transition-colors disabled:opacity-40"
+              >
+                Читать отчёт
+              </button>
+              <button
+                type="button"
                 onClick={printHistory}
                 className="rounded-xl border border-border bg-surface-card px-4 py-2 text-sm font-medium text-ink hover:bg-surface-card-soft"
               >
@@ -536,6 +709,12 @@ function BodySignalsPageContent() {
           </div>
         </div>
       )}
+      <WellbeingReportReaderModal
+        open={reportReaderOpen}
+        onClose={() => setReportReaderOpen(false)}
+        report={historyReport}
+        rangeDays={historyRangeDays}
+      />
     </div>
   );
 }

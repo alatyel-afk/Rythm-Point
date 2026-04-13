@@ -62,6 +62,17 @@ export default function CalendarPage() {
 
       {err && <p className="text-semantic-danger text-sm">{err}</p>}
 
+      <p className="text-xs text-ink-secondary flex flex-wrap items-center gap-x-5 gap-y-1">
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-2 w-6 rounded bg-[#c9a227]" aria-hidden />
+          экадаши (11-я титхи)
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-2 w-6 rounded bg-amber-600" aria-hidden />
+          прадош (13-я титхи)
+        </span>
+      </p>
+
       <div className="grid grid-cols-7 gap-1 text-center">
         {WKDAYS.map((d) => (
           <div key={d} className="py-1.5 text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary">
@@ -80,11 +91,33 @@ export default function CalendarPage() {
               href={`/today?on=${d.date}`}
               className="group bg-surface-card rounded-xl border border-border-strong p-2.5 shadow-card hover:shadow-card-hover hover:border-accent/40 transition-all flex flex-col gap-1 min-h-[128px]"
             >
-              <div className="flex items-center justify-between">
+              <div className="flex items-start justify-between gap-1">
                 <span className="text-sm font-semibold text-ink">{dayNum}</span>
-                <span className="text-[10px] text-ink-tertiary tabular-nums">
-                  {d.lunar_day_number} л.д.
-                </span>
+                <div className="flex flex-col items-end gap-1 shrink-0">
+                  {(d.ekadashi_flag || d.pradosh_flag) && (
+                    <div className="flex flex-wrap justify-end gap-1">
+                      {d.ekadashi_flag && (
+                        <span
+                          className="rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide bg-[#c9a227]/25 text-[#7a6218] ring-1 ring-[#c9a227]/50"
+                          title="Экадаши"
+                        >
+                          экадаши
+                        </span>
+                      )}
+                      {d.pradosh_flag && (
+                        <span
+                          className="rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide bg-amber-100 text-amber-900 ring-1 ring-amber-600/45"
+                          title="Прадош"
+                        >
+                          прадош
+                        </span>
+                      )}
+                    </div>
+                  )}
+                  <span className="text-[10px] text-ink-tertiary tabular-nums">
+                    {d.lunar_day_number} л.д.
+                  </span>
+                </div>
               </div>
               <span className="text-[10px] text-ink-secondary leading-snug truncate">
                 {d.nakshatra}
@@ -107,17 +140,6 @@ export default function CalendarPage() {
                   <span className={`h-1.5 w-1.5 rounded-full ${retentionDot(100 - d.release_drainage_potential)}`} />
                 </div>
               </div>
-
-              {(d.ekadashi_flag || d.pradosh_flag) && (
-                <div className="flex gap-1.5 mt-0.5">
-                  {d.ekadashi_flag && (
-                    <span className="text-[9px] font-semibold text-semantic-info">ЭКА</span>
-                  )}
-                  {d.pradosh_flag && (
-                    <span className="text-[9px] font-semibold text-semantic-info">ПРА</span>
-                  )}
-                </div>
-              )}
             </a>
           );
         })}

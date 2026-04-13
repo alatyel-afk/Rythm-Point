@@ -6,8 +6,8 @@ _MEAL_MATRIX_LABEL_RU: dict[MealMatrix, str] = {
     MealMatrix.A_STABLE: "Полноценный обед — устойчивый день",
     MealMatrix.B_NERVOUS: "Упрощённый обед — нагрузка на нервную систему",
     MealMatrix.C_RETENTION: "Лёгкий обед — при отёках",
-    MealMatrix.D_EKADASHI: "Овощи без мяса — экадаши",
-    MealMatrix.E_PRADOSH: "Ранний обед с мясом — прадош",
+    MealMatrix.D_EKADASHI: "Пост только на воде — экадаши",
+    MealMatrix.E_PRADOSH: "Пост только на воде — прадоша",
     MealMatrix.F_RICE: "Обед с гарниром — когда крупа разрешена по правилам дня",
 }
 

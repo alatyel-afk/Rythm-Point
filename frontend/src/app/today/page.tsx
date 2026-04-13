@@ -173,15 +173,23 @@ function TodayPageContent() {
                   <span className="text-white/25">|</span>
                   <span className="text-white/80">{proto.moon_phase}</span>
                 </div>
+                {(proto.ekadashi_flag || proto.pradosh_flag) && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {proto.ekadashi_flag && (
+                      <span className="inline-flex items-center rounded-lg bg-[#d4af37]/25 px-3 py-1.5 text-[13px] font-semibold text-[#f5e6a6] ring-1 ring-[#d4af37]/45">
+                        Экадаши — без пищи, только вода (без калорийных напитков)
+                      </span>
+                    )}
+                    {proto.pradosh_flag && (
+                      <span className="inline-flex items-center rounded-lg bg-amber-500/20 px-3 py-1.5 text-[13px] font-semibold text-amber-100 ring-1 ring-amber-300/40">
+                        Прадоша — без пищи, только вода; вечер без компенсации и споров
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
               <div className="flex flex-wrap items-center gap-2 sm:pt-1">
                 <DayKindBadge kind={proto.day_type} />
-                {proto.ekadashi_flag && (
-                  <span className="badge border border-white/25 bg-white/10 text-white">экадаши</span>
-                )}
-                {proto.pradosh_flag && (
-                  <span className="badge border border-white/25 bg-white/10 text-white">прадош</span>
-                )}
               </div>
             </div>
           </div>

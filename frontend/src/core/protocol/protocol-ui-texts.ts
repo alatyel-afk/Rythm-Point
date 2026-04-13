@@ -6,7 +6,7 @@ import type {
 } from "./protocol-types";
 import { lunchTemplates } from "./meal-templates";
 import { breathingTemplates, loadTemplates } from "./practice-templates";
-import { BREAKFAST } from "../profile/fixed-rules";
+import { BREAKFAST, WATER_ONLY_FAST_DAY_TEXT } from "../profile/fixed-rules";
 
 const PRODUCT_RU: Record<string, string> = {
   chicken: "курица",
@@ -66,9 +66,9 @@ const RULE_BODY_RU: Partial<Record<SignalRuleId, string>> = {
     "Сил мало, отёков нет — допускается малая порция риса по шаблону, без самодеятельности.",
   low_energy_with_swelling:
     "Слабость на фоне удержания в тканях — без риса и плотных тарелок, только шаблон удержания.",
-  ekadashi_day: "День уменьшения объёма — без компенсации тяжёлой едой вечером.",
+  ekadashi_day: "Пост только на воде — без компенсации тяжёлой едой вечером.",
   day_after_ekadashi: "Мягкий выход после разгрузки — без «наградного» обеда.",
-  pradosh_day: "Собранный день: ранний обед по шаблону, без гарнира и без отката.",
+  pradosh_day: "Пост только на воде — вечер без отката и без споров на пустой желудок.",
   pre_full_moon_retention: "Риск задержки воды высок — минимум соли и соусов, вечер лёгкий.",
   waning_mid_cycle_drainage:
     "Благоприятное окно для мягкого выведения воды без жёстких мер.",
@@ -124,11 +124,20 @@ export function formatCanonicalLunchForSignalUi(input: {
   riceAllowed: boolean;
   riceReason?: string;
 }): string {
-  const riceLine = input.riceAllowed
-    ? `Крупа: можно${input.riceReason ? ` — ${input.riceReason}` : ""}.`
-    : `Крупа: сегодня без крупы${input.riceReason ? ` — ${input.riceReason}` : ""}.`;
+  const waterFast =
+    input.timeWindow.includes("только вода") ||
+    input.fullDescription.includes("Пищи нет") ||
+    input.fullDescription.includes("только вода");
+  const headerLine = waterFast
+    ? `Питание сегодня: ${input.timeWindow}.`
+    : `Окно обеда: ${input.timeWindow}.`;
+  const riceLine = waterFast
+    ? "Крупа: не применяется — день без пищи, только вода."
+    : input.riceAllowed
+      ? `Крупа: можно${input.riceReason ? ` — ${input.riceReason}` : ""}.`
+      : `Крупа: сегодня без крупы${input.riceReason ? ` — ${input.riceReason}` : ""}.`;
   return [
-    `Окно обеда: ${input.timeWindow}.`,
+    headerLine,
     "",
     input.matrixLabel,
     "",
@@ -150,12 +159,14 @@ export function buildRussianUiProtocol(input: BuildRussianUiProtocolInput): Russ
 
   const ld = loadTemplates[loadTemplateId];
 
+  const waterFastRule = matchedRule === "ekadashi_day" || matchedRule === "pradosh_day";
+
   return {
     title,
     bodyEffect,
-    breakfast: BREAKFAST,
-    lunchTitle: "Обед",
-    lunchText: formatLunchItemsRu(lunchTemplateId),
+    breakfast: waterFastRule ? WATER_ONLY_FAST_DAY_TEXT : BREAKFAST,
+    lunchTitle: waterFastRule ? "Питание" : "Обед",
+    lunchText: waterFastRule ? WATER_ONLY_FAST_DAY_TEXT : formatLunchItemsRu(lunchTemplateId),
     breathingTitle: "Дыхание",
     breathingText: br
       ? `${practiceRu}, ${br.durationMin} мин, ${timeRu}.`
